@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { SnackbarProvider } from 'notistack';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import { rootReducer } from './REDUCER/Index';
+import rootReducer from './REDUCER/index';
 
 const store = configureStore({
   reducer: rootReducer
