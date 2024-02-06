@@ -1,7 +1,8 @@
 import { authEndpoints } from "../apis"
 import { apiConnector } from "../ApiConnector";
 import { enqueueSnackbar, closeSnackbar } from "notistack";
-import { setToken, setUser, setLoading} from "../../SLICES/AuthSlice"
+import { setToken, setUser, setLoading } from "../../SLICES/AuthSlice"
+import { useSelector } from "react-redux";
 const {
     SIGNUP_API,
     LOGIN_API
@@ -77,6 +78,7 @@ export function login({
           dispatch(setUser({ ...response.data.user, image: userImage }))
           localStorage.setItem("token", JSON.stringify(response.data.token))
           navigate("/dashboard/my-profile")
+          // Test()
         } catch (error) {
           console.log("LOGIN API ERROR............", error)
           enqueueSnackbar(error.response.data.message, { variant: "error" });
@@ -86,4 +88,14 @@ export function login({
             closeSnackbar(snackId)
         }
       }
+}
+export function logout(navigate){
+  return async (dispatch)=>{
+      dispatch(setToken(null))
+      dispatch(setUser(null))
+      localStorage.setItem("token",null)
+      localStorage.setItem("token",null)
+      alert("Logged out !!")
+      navigate("/")
+  }
 }

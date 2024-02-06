@@ -4,6 +4,7 @@ const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const {connect} = require("./CONFIG/databse")
 const authRoutes = require("./ROUTES/AuthRoutes")
+const userRoutes = require("./ROUTES/UserRoutes")
 
 // setting up port number
 const PORT = process.env.PORT || 4000
@@ -27,6 +28,7 @@ app.use(cookieParser())
 
 // setting up router
 app.use('/api/v1',authRoutes)
+app.use('/api/v1',userRoutes)
 app.get("/", (req, res) => {
 	return res.json({
 		success: true,

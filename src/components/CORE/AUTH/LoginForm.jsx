@@ -20,7 +20,7 @@ const LoginForm = () => {
   } = useForm()
 
   const submitForm = (data) =>{
-    console.log(data)
+  
     setLoading(true)
     dispatch(login({
       email: data.email,

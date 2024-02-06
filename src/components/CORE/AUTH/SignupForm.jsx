@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
-import { useSnackbar } from 'notistack'
 import { signup } from '../../../SERVICES/operations/AuthOperations'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -32,7 +31,7 @@ const SignupForm = () => {
         setLoading(true)
         
         dispatch(signup({
-            accountType: ACCOUNT_TYPE.STUDENT,
+            accountType: ACCOUNT_TYPE.ADMIN,
             firstName: data.firstName,
             lastName: data.lastName,
             email: data.email,
