@@ -5,12 +5,12 @@ import { Navigate } from "react-router-dom"
 
 function OpenRoute({ children }) {
   const { token } = useSelector((state) => state.auth)
-
+  console.log('in the open Route')
   if (token === null ) {
     return children
   } else {
-    enqueueSnackbar('You are Already logged In')
-    return <Navigate to="/dashboard/my-profile" />
+    enqueueSnackbar('You are Already logged In',{varient:'error'})
+    return (<Navigate to="/dashboard/my-profile" />)
   }
 }
 

@@ -4,8 +4,9 @@ import { useNavigate } from "react-router-dom"
 
 import { formattedDate } from "../../../UTILS/dateFormatter"
 import IconBtn from "../../COMMON/IconBtn"
+import { memo } from "react"
 
-export default function MyProfile() {
+export default memo(function MyProfile() {
   const { user } = useSelector((state) => state.auth)
   
   const navigate = useNavigate()
@@ -111,4 +112,4 @@ export default function MyProfile() {
 
     </>
   )
-}
+}) 

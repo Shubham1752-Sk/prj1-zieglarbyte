@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 import { signup } from '../../../SERVICES/operations/AuthOperations'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { ACCOUNT_TYPE } from '../../../UTILS/constants'
+import Tab from '../../COMMON/Tab'
 
-const SignupForm = () => {
+const SignupForm = memo( function SignupForm({adminPresent}){
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -14,6 +15,7 @@ const SignupForm = () => {
     const [loading, setLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+    const [accountType, setAccountType] = useState(ACCOUNT_TYPE.STUDENT)
 
     const {
         register,
@@ -30,8 +32,9 @@ const SignupForm = () => {
         }
         setLoading(true)
         
+        console.log(accountType)
         dispatch(signup({
-            accountType: ACCOUNT_TYPE.ADMIN,
+            accountType: accountType,
             firstName: data.firstName,
             lastName: data.lastName,
             email: data.email,
@@ -42,9 +45,30 @@ const SignupForm = () => {
         setLoading(false)
     }
 
+    const tabData = [
+        {
+          id: 1,
+          tabName: "Student",
+          type: ACCOUNT_TYPE.STUDENT,
+        },
+        {
+          id: 2,
+          tabName: "Instructor",
+          type: ACCOUNT_TYPE.INSTRUCTOR,
+        },
+        {
+            id: 3,
+            tabName: "Admin",
+            type: ACCOUNT_TYPE.ADMIN,
+        },
+      ]
+
     return (
         <>
             <div className='w-full flex flex-col gap-4 '>
+            {
+                adminPresent && <Tab tabData={tabData} field={accountType} setField={setAccountType} />
+            }
                 <form onSubmit={handleSubmit(submitForm)} className='w-full'>
                     <div className='w-full flex flex-col gap-4 p-2 '>
                         {/* Name Fields */}
@@ -211,6 +235,6 @@ const SignupForm = () => {
             </div>
         </>
     )
-}
+})
 
 export default SignupForm

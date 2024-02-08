@@ -95,7 +95,7 @@ export function logout(navigate){
       dispatch(setUser(null))
       localStorage.setItem("token",null)
       localStorage.setItem("token",null)
-      alert("Logged out !!")
+      enqueueSnackbar("Logged out !!",{variant:'success'})
       navigate("/")
   }
 }
