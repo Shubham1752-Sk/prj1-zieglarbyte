@@ -1,25 +1,29 @@
 const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv");
 const User = require("../MODELS/User.model");
 
 exports.auth = async (req, res, next) => {
 	try {
 		// Extracting JWT from request cookies, body or header
-		// console.log(req.body)
+		// console.log(req)
 		// console.log(req.cookies)
+		// console.log(req.header())
+		// console.log(req.header('Authoriztion'))
 		// console.log(req.header("Authorization").split(" ")[1])
 		// console.log(req.params)
-		const token = 	req.header("Authorization").split(" ")[1] ||
+		const token = 	req.header("Authorization")?.split(" ")[1] ||
 						req.cookies.token ||
 						req.body.token ;
 
 		// If JWT is missing, return 401 Unauthorized response
+		// console.log(token)
+		// console.log('eh')
 		if (!token) {
 			return res.status(401).json({ success: false, message: `Token Missing` });
 		}
 
 		try {
 			// Verifying the JWT using the secret key stored in environment variables
+			
 			const decode = await jwt.verify(token, process.env.JWT_SECRET);
 			console.log(decode);
 			// Storing the decoded JWT payload in the request object for further use
@@ -65,7 +69,7 @@ exports.isAdmin = async (req, res, next) => {
 exports.isInstructor = async (req, res, next) => {
 	try {
 		const userDetails = await User.findOne({ email: req.user.email });
-		// console.log(userDetails);
+		console.log(userDetails);
 
 		// console.log(userDetails.accountType);
 

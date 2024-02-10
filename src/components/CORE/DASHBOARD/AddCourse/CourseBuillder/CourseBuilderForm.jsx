@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux"
 import {
   createSection,
   updateSection,
-} from "../../../../../SERVICES/operations/CourseOperation"
+} from "../../../../../SERVICES/operations/CourseOperations"
 
 import {
   setCourse,

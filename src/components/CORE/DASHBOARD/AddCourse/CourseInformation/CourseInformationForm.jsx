@@ -8,8 +8,7 @@ import { useDispatch, useSelector } from "react-redux"
 import {
   addCourseDetails,
   editCourseDetails,
-  
-} from "../../../../../SERVICES/operations/CourseOperation"
+} from "../../../../../SERVICES/operations/CourseOperations"
 import {
   fetchCourseCategories,
 } from "../../../../../SERVICES/operations/CategoryOperations"
@@ -20,6 +19,7 @@ import Upload from "../Upload"
 import ChipInput from "./ChipInput"
 import RequirementsField from "./RequirementsField"
 import Spinner from "../../../../COMMON/IconBtn"
+import { useLocation } from "react-router-dom"
 
 export default function CourseInformationForm() {
   const {
@@ -35,6 +35,8 @@ export default function CourseInformationForm() {
   const { course, editCourse } = useSelector((state) => state.course)
   const [loading, setLoading] = useState(false)
   const [courseCategories, setCourseCategories] = useState([])
+  const currentLocation = useLocation()
+  let courseId
 
   useEffect(() => {
     const getCategories = async () => {
@@ -49,6 +51,8 @@ export default function CourseInformationForm() {
     }
     // if form is in edit mode
     if (editCourse) {
+      courseId = currentLocation.pathname.split('/').at(-1);
+
       // console.log("data populated", editCourse)
       setValue("courseTitle", course.courseName)
       setValue("courseShortDesc", course.courseDescription)
@@ -87,46 +91,44 @@ export default function CourseInformationForm() {
   const onSubmit = async (data) => {
     
     if (editCourse) {
-      
+      // console.log(courseId)
       if (isFormUpdated()) {
         const currentValues = getValues()
-        const formData = new FormData()
+
+        let payloadData ={}
         // console.log(data)
-        formData.append("courseId", course._id)
+        payloadData.courseId = course._id
         if (currentValues.courseTitle !== course.courseName) {
-          formData.append("courseName", data.courseTitle)
+          payloadData.courseName = data.courseTitle
         }
         if (currentValues.courseShortDesc !== course.courseDescription) {
-          formData.append("courseDescription", data.courseShortDesc)
+          payloadData.courseDescription = data.courseShortDesc
         }
         if (currentValues.coursePrice !== course.price) {
-          formData.append("price", data.coursePrice)
+          payloadData.price = data.coursePrice
         }
         if (currentValues.courseTags.toString() !== course.tag.toString()) {
-          formData.append("tag", JSON.stringify(data.courseTags))
+          payloadData.tag = JSON.stringify(data.courseTags)
         }
         if (currentValues.courseBenefits !== course.whatYouWillLearn) {
-          formData.append("whatYouWillLearn", data.courseBenefits)
+          payloadData.whatYouWillLearn = data.courseBenefits
         }
         if (currentValues.courseCategory._id !== course.category._id) {
-          formData.append("category", data.courseCategory)
+          payloadData.category = data.courseCategory
         }
         if (
           currentValues.courseRequirements.toString() !==
           course.instructions.toString()
         ) {
-          formData.append(
-            "instructions",
-            JSON.stringify(data.courseRequirements)
-          )
+          payloadData.instructions = JSON.stringify(data.courseRequirements)
+          
         }
         if (currentValues.courseImage !== course.thumbnail) {
-          formData.append("thumbnailImage", data.courseImage)
+          payloadData.thumbnailImage = data.courseImage
         }
-        // console.log("Edit Form data: ", formData)
+        payloadData.token = token
         setLoading(true)
-        let result
-        // const result = await editCourseDetails(formData, token)
+        const result = await editCourseDetails(payloadData, courseId, token)
         setLoading(false)
         if (result) {
           dispatch(setStep(2))
@@ -138,16 +140,6 @@ export default function CourseInformationForm() {
       return
     }
 
-    const formData = new FormData()
-    formData.append("courseName", data.courseTitle)
-    formData.append("courseDescription", data.courseShortDesc)
-    formData.append("price", data.coursePrice)
-    formData.append("tag", JSON.stringify(data.courseTags))
-    formData.append("whatYouWillLearn", data.courseBenefits)
-    formData.append("category", data.courseCategory)
-    formData.append("status", COURSE_STATUS.DRAFT)
-    formData.append("instructions", JSON.stringify(data.courseRequirements))
-    formData.append("thumbnailImage", data.courseImage)
     setLoading(true)
     const payloadData ={
       courseName: data.courseTitle,

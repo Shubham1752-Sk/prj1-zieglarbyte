@@ -5,7 +5,9 @@ import { userEndpoints } from "../apis"
 import { enqueueSnackbar, closeSnackbar } from "notistack"
 
 const {
-    GET_USER_DETAILS_API
+    GET_USER_DETAILS_API,
+    GET_USER_ENROLLED_COURSES_API,
+    GET_INSTRUCTOR_DATA_API
 } = userEndpoints
 
 export function getUserDetails(token, navigate) {
@@ -40,3 +42,50 @@ export function getUserDetails(token, navigate) {
 
     }
   }
+
+  export async function getUserEnrolledCourses(token) {
+    let snackId = enqueueSnackbar("Loading...",{vairent:'info'})
+    let result = []
+    try {
+      const response = await apiConnector(
+        "GET",
+        GET_USER_ENROLLED_COURSES_API,
+        null,
+        {
+          Authorization: `Bearer ${token}`,
+        }
+      )
+      // console.log(
+      //   "GET_USER_ENROLLED_COURSES_API API RESPONSE............",
+      //   response
+      // )
+  
+      if (!response.data.success) {
+        throw new Error(response.data.message)
+      }
+      result = response.data.data
+    } catch (error) {
+      console.log("GET_USER_ENROLLED_COURSES_API API ERROR............", error)
+      enqueueSnackbar("Could Not Get Enrolled Courses",{variant:'error'})
+    }
+    closeSnackbar(snackId)
+    return result
+  }
+  
+  export async function getInstructorData(token) {
+    let snackId = enqueueSnackbar("Loading...",{vairent:'info'})
+    let result = []
+    try {
+      const response = await apiConnector("GET", GET_INSTRUCTOR_DATA_API, null, {
+        Authorization: `Bearer ${token}`,
+      })
+      console.log("GET_INSTRUCTOR_DATA_API API RESPONSE............", response)
+      result = response?.data?.courses
+    } catch (error) {
+      console.log("GET_INSTRUCTOR_DATA_API API ERROR............", error)
+      enqueueSnackbar("Could Not Get Instructor Data",{variant:'error'})
+    }
+    closeSnackbar(snackId)
+    return result
+  }
+  

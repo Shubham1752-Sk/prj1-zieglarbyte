@@ -15,6 +15,9 @@ import MyProfile from './components/CORE/DASHBOARD/MyProfile';
 import AddCategory from "./components/CORE/DASHBOARD/AddCategory"
 import AddUser from './components/CORE/DASHBOARD/AddUser';
 import AddCourse from './components/CORE/DASHBOARD/AddCourse';
+import Instructor from "./components/CORE/DASHBOARD/Instructor"
+import MyCourses from "./components/CORE/DASHBOARD/MyCourses"
+import EditCourse from './components/CORE/DASHBOARD/EditCourse';
 
 // functions
 import { getUserDetails } from './SERVICES/operations/UserOperations';
@@ -27,11 +30,11 @@ function App() {
   const { user, token } = useSelector((state) => state.auth)
 
   useEffect(() => {
-    
-    if (token) {  
+
+    if (token) {
       dispatch(getUserDetails(token, navigate))
     }
-  },[])
+  }, [])
   return (
     <div className="App bg-bg-yellow text-text-gray">
       <Routes>
@@ -70,12 +73,13 @@ function App() {
           {/* Routes for Instructors Only */}
           {user?.accountType === ACCOUNT_TYPE.INSTRUCTOR && (
             <>
+              <Route path="dashboard/instructor" element={<Instructor />} />
               <Route path="dashboard/add-course" element={<AddCourse />} />
-              {/* <Route path="dashboard/my-courses" element={<MyCourses />} />
+              <Route path="dashboard/my-courses" element={<MyCourses />} />
               <Route
                 path="dashboard/edit-course/:courseId"
                 element={<EditCourse />}
-              /> */}
+              />
             </>
           )}
         </Route>

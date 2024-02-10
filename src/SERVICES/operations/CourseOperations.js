@@ -21,7 +21,7 @@ const {
 
 export const addCourseDetails = async (data, token) => {
     let result = null
-    const snackId = enqueueSnackbar("Creating Course",{persist:'true',varient:'info'})
+    const snackId = enqueueSnackbar("Creating Course..",{persist:'true',variant:'info'})
     
     try {
       const response = await apiConnector("POST", CREATE_COURSE_API, data, {
@@ -42,22 +42,21 @@ export const addCourseDetails = async (data, token) => {
   }
 
 // edit the course details
-export const editCourseDetails = async (data, token) => {
+export const editCourseDetails = async(data) =>{
   let result = null
-  const snackId = enqueueSnackbar("Loading...",{persist:'true',varient:'info'})
-  try {
-    const response = await apiConnector("POST", EDIT_COURSE_API, data, {
-      Authorization: `Bearer ${token}`,
-    })
+  // console.log('token is: ',token)
+  const snackId = enqueueSnackbar("Loading...",{persist:'true',variant:'info'})
+  try{
+    const response = await apiConnector("POST",EDIT_COURSE_API,data);
     console.log("EDIT COURSE API RESPONSE............", response)
     if (!response?.data?.success) {
       throw new Error("Could Not Update Course Details")
     }
-    enqueueSnackbar("Course Details Updated Successfully",{varient:'success'})
+    enqueueSnackbar("Course Details Updated Successfully",{variant:'success'})
     result = response?.data?.data
   } catch (error) {
     console.log("EDIT COURSE API ERROR............", error)
-    enqueueSnackbar(error.message,{varient:'error'})
+    enqueueSnackbar(error.message,{variant:'error'})
   }
   closeSnackbar(snackId)
   return result
@@ -66,7 +65,7 @@ export const editCourseDetails = async (data, token) => {
 // create a section
 export const createSection = async (data, token) => {
   let result = null
-  const snackId = enqueueSnackbar("Loading...",{persist:'true',varient:'info'})
+  const snackId = enqueueSnackbar("Loading...",{persist:'true',variant:'info'})
   try {
     const response = await apiConnector("POST", CREATE_SECTION_API, data, {
       Authorization: `Bearer ${token}`,
@@ -79,7 +78,7 @@ export const createSection = async (data, token) => {
     result = response?.data?.updatedCourse
   } catch (error) {
     console.log("CREATE SECTION API ERROR............", error)
-    enqueueSnackbar(error.message,{varient:'error'})
+    enqueueSnackbar(error.message,{variant:'error'})
   }
   closeSnackbar(snackId)
   return result
@@ -88,7 +87,7 @@ export const createSection = async (data, token) => {
 // create a subsection
 export const createSubSection = async (data, token) => {
   let result = null
-  const snackId = enqueueSnackbar("Loading...",{persist:'true',varient:'info'})
+  const snackId = enqueueSnackbar("Loading...",{persist:'true',variant:'info'})
   try {
     const response = await apiConnector("POST", CREATE_SUBSECTION_API, data, {
       Authorization: `Bearer ${token}`,
@@ -102,7 +101,7 @@ export const createSubSection = async (data, token) => {
     enqueueSnackbar('Lecture Added  Successfully!', { variant: 'success' });
   } catch (error) {
     console.log("CREATE SUB-SECTION API ERROR............", error)
-    enqueueSnackbar(error.message,{varient:'error'})
+    enqueueSnackbar(error.message,{variant:'error'})
   }
   closeSnackbar(snackId)
   return result
@@ -111,7 +110,7 @@ export const createSubSection = async (data, token) => {
 // update a section
 export const updateSection = async (data, token) => {
   let result = null
-  const snackId = enqueueSnackbar("Loading...",{persist:'true',varient:'info'})
+  const snackId = enqueueSnackbar("Loading...",{persist:'true',variant:'info'})
   try {
     const response = await apiConnector("POST", UPDATE_SECTION_API, data, {
       Authorization: `Bearer ${token}`,
@@ -124,7 +123,7 @@ export const updateSection = async (data, token) => {
     result = response?.data?.data
   } catch (error) {
     console.log("UPDATE SECTION API ERROR............", error)
-    enqueueSnackbar(error.message,{varient:'error'})
+    enqueueSnackbar(error.message,{variant:'error'})
   }
   closeSnackbar(snackId)
   return result
@@ -133,7 +132,7 @@ export const updateSection = async (data, token) => {
 // update a subsection
 export const updateSubSection = async (data, token) => {
   let result = null
-  const snackId = enqueueSnackbar("Loading...",{persist:'true',varient:'info'})
+  const snackId = enqueueSnackbar("Loading...",{persist:'true',variant:'info'})
   console.log(data)
   try {
     const response = await apiConnector("POST", UPDATE_SUBSECTION_API, data, {
@@ -143,11 +142,11 @@ export const updateSubSection = async (data, token) => {
     if (!response?.data?.success) {
       throw new Error("Could Not Update Lecture")
     }
-    enqueueSnackbar("Lecture Updated",{varient:'success'})
+    enqueueSnackbar("Lecture Updated",{variant:'success'})
     result = response?.data?.data
   } catch (error) {
     console.log("UPDATE SUB-SECTION API ERROR............", error)
-    enqueueSnackbar(error.message,{varient:'error'})
+    enqueueSnackbar(error.message,{variant:'error'})
   }
   closeSnackbar(snackId)
   return result
@@ -156,7 +155,7 @@ export const updateSubSection = async (data, token) => {
 // delete a section
 export const deleteSection = async (data, token) => {
   let result = null
-  const snackId = enqueueSnackbar("Loading...",{persist:'true',varient:'info'})
+  const snackId = enqueueSnackbar("Loading...",{persist:'true',variant:'info'})
   try {
     const response = await apiConnector("POST", DELETE_SECTION_API, data, {
       Authorization: `Bearer ${token}`,
@@ -169,7 +168,7 @@ export const deleteSection = async (data, token) => {
     result = response?.data?.data
   } catch (error) {
     console.log("DELETE SECTION API ERROR............", error)
-    enqueueSnackbar(error.message,{varient:'error'})
+    enqueueSnackbar(error.message,{variant:'error'})
   }
   closeSnackbar(snackId)
   return result
@@ -177,7 +176,7 @@ export const deleteSection = async (data, token) => {
 // delete a subsection
 export const deleteSubSection = async (data, token) => {
   let result = null
-  const snackId = enqueueSnackbar("Loading...",{persist:'true',varient:'info'})
+  const snackId = enqueueSnackbar("Loading...",{persist:'true',variant:'info'})
   try {
     const response = await apiConnector("POST", DELETE_SUBSECTION_API, data, {
       Authorization: `Bearer ${token}`,
@@ -186,11 +185,11 @@ export const deleteSubSection = async (data, token) => {
     if (!response?.data?.success) {
       throw new Error("Could Not Delete Lecture")
     }
-    enqueueSnackbar("Lecture Deleted",{varient:'success'})
+    enqueueSnackbar("Lecture Deleted",{variant:'success'})
     result = response?.data?.data
   } catch (error) {
     console.log("DELETE SUB-SECTION API ERROR............", error)
-    enqueueSnackbar(error.message,{varient:'error'})
+    enqueueSnackbar(error.message,{variant:'error'})
   }
   closeSnackbar(snackId)
   return result
@@ -198,7 +197,7 @@ export const deleteSubSection = async (data, token) => {
 
 // delete a course
 export const deleteCourse = async (data, token) => {
-  const snackId = enqueueSnackbar("Loading...",{persist:'true',varient:'info'})
+  const snackId = enqueueSnackbar("Loading...",{persist:'true',variant:'info'})
   try {
     const response = await apiConnector("DELETE", DELETE_COURSE_API, data, {
       Authorization: `Bearer ${token}`,
@@ -207,17 +206,17 @@ export const deleteCourse = async (data, token) => {
     if (!response?.data?.success) {
       throw new Error("Could Not Delete Course")
     }
-    enqueueSnackbar("Course Deleted",{varient:'success'})
+    enqueueSnackbar("Course Deleted",{variant:'success'})
   } catch (error) {
     console.log("DELETE COURSE API ERROR............", error)
-    enqueueSnackbar(error.message,{varient:'error'})
+    enqueueSnackbar(error.message,{variant:'error'})
   }
   closeSnackbar(snackId)
 }
 
 export const fetchInstructorCourses = async (token) => {
   let result = []
-  const snackId = enqueueSnackbar("Loading...",{persist:'true',varient:'info'})
+  const snackId = enqueueSnackbar("Loading...",{persist:'true',variant:'info'})
   try {
     const response = await apiConnector(
       "GET",
@@ -241,7 +240,7 @@ export const fetchInstructorCourses = async (token) => {
 }
 
 export const fetchCourseDetails = async (courseId) => {
-  const snackId = enqueueSnackbar("Loading...",{persist:'true',varient:'info'})
+  const snackId = enqueueSnackbar("Loading...",{persist:'true',variant:'info'})
   //   dispatch(setLoading(true));
   let result = null
   try {
@@ -265,7 +264,7 @@ export const fetchCourseDetails = async (courseId) => {
 }
 
 export const getFullDetailsOfCourse = async (courseId, token) => {
-  const snackId = enqueueSnackbar("Loading...",{persist:'true',varient:'info'})
+  const snackId = enqueueSnackbar("Loading...",{persist:'true',variant:'info'})
   //   dispatch(setLoading(true));
   let result = null
   try {
@@ -299,7 +298,7 @@ export const getFullDetailsOfCourse = async (courseId, token) => {
 export const markLectureAsComplete = async (data, token) => {
   let result = null
   console.log("mark complete data", data)
-  const snackId = enqueueSnackbar("Loading...",{persist:'true',varient:'info'})
+  const snackId = enqueueSnackbar("Loading...",{persist:'true',variant:'info'})
   try {
     const response = await apiConnector("POST", LECTURE_COMPLETION_API, data, {
       Authorization: `Bearer ${token}`,
@@ -325,7 +324,7 @@ export const markLectureAsComplete = async (data, token) => {
 
 // create a rating for course
 export const createRating = async (data, token) => {
-  const snackId = enqueueSnackbar("Loading...",{persist:'true',varient:'info'})
+  const snackId = enqueueSnackbar("Loading...",{persist:'true',variant:'info'})
   let success = false
   try {
     const response = await apiConnector("POST", CREATE_RATING_API, data, {

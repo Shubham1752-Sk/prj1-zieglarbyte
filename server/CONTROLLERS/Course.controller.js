@@ -2,10 +2,26 @@ const Course = require("../MODELS/Course.model")
 const Category = require("../MODELS/Category.model")
 const Section = require("../MODELS/Section.model")
 const SubSection = require("../MODELS/SubSection.model")
+const RatingAndReview = require('../MODELS/RatingAndReviews.model')
 const User = require("../MODELS/User.model")
 const CourseProgress = require("../MODELS/CourseProgress.model")
 const { uploadImageToCloudinary } = require("../UTILS/imageUploader")
 const { convertSecondsToDuration} = require("../UTILS/secToDuration")
+
+function getCourseDuration(courseDetails){
+  // console.log(courseDetails)
+  let totalDurationInSeconds = 0
+    courseDetails.courseContent.forEach((content) => {
+      content.subSection.forEach((subSection) => {
+        const timeDurationInSeconds = parseInt(subSection.timeDuration)
+        totalDurationInSeconds += timeDurationInSeconds
+      })
+    })
+
+    const totalDuration = convertSecondsToDuration(totalDurationInSeconds)
+    // return ({...courseDetails, totalDuration})
+    return totalDuration
+}
 
 exports.createCourse = async (req, res) => {
   try {
@@ -148,7 +164,9 @@ exports.editCourse = async (req, res) => {
   try {
     const { courseId, thumbnail } = req.body
     const updates = req.body
+    // console.log(courseId)
     // console.log(updates)
+    
     const course = await Course.findById(courseId)
 
     if (!course) {
@@ -173,7 +191,7 @@ exports.editCourse = async (req, res) => {
         if (key === "tag" || key === "instructions") {
           course[key] = JSON.parse(updates[key])
         } else {
-          console.log(`Course key is ${course[key]} update key is ${updates[key]}`)
+          // console.log(`Course key is ${course[key]} update key is ${updates[key]}`)
           course[key] = updates[key]
         }
       }
@@ -278,12 +296,44 @@ exports.getInstructorCourses = async (req, res) => {
     // Find all courses belonging to the instructor
     const instructorCourses = await Course.find({
       instructor: instructorId,
-    }).sort({ createdAt: -1 })
+    })
+    .populate({
+      path: "courseContent",
+      model: 'Section',
+      populate: {
+        path: "subSection",
+        model: 'SubSection',
+        select: "-videoUrl",
+      },
+    })
+    .sort({ createdAt: -1 })
 
+    let instructorCoursesWithDuration = []
+  
+    for(let course of instructorCourses){
+      const duration = getCourseDuration(course)
+      // console.log('duartion is: ',duration)
+      const courseObject = {...course, duration};
+      // courseObject.push(duration)
+      // Add the duration property
+      courseObject.duration = duration;
+      // console.log('course Object is: ',courseObject)
+      const courseWithDuration = {...courseObject._doc, duration}
+      // console.log('course Object with duration is: ',courseWithDuration)
+      // instructorCourses[instructorCourses.indexof(course)] = courseWithDuration
+      // console.log('Updated Instructor course is: ',instructorCourses)
+      instructorCoursesWithDuration.push(courseWithDuration);
+      // Im trying to add duartion property to each object(course) in the array(instructorCourses) but it's not working
+      // course.duration = duration
+      // course[duration] = `${duration}`
+      // course.duration = `${duration}`
+      // console.log("updated course: ",course)
+    }
     // Return the instructor's courses
+    // console.log(instructorCoursesWithDuration)
     res.status(200).json({
       success: true,
-      data: instructorCourses,
+      data: instructorCoursesWithDuration,
     })
   } catch (error) {
     console.error(error)
@@ -304,10 +354,11 @@ exports.getCourseDetails = async (req, res) => {
       .populate({
         path: "instructor",
         populate: {
-          path: "additionalInfo",
+          path: "additionalDetails",
         },
       })
-      .populate("category")  // .populate("ratingAndReviews")
+      .populate("category")  
+      .populate("ratingAndReviews")
       .populate({
         path: "courseContent",
         populate: {
@@ -331,16 +382,7 @@ exports.getCourseDetails = async (req, res) => {
     //   });
     // }
 
-    let totalDurationInSeconds = 0
-    courseDetails.courseContent.forEach((content) => {
-      content.subSection.forEach((subSection) => {
-        const timeDurationInSeconds = parseInt(subSection.timeDuration)
-        totalDurationInSeconds += timeDurationInSeconds
-      })
-    })
-
-    const totalDuration = convertSecondsToDuration(totalDurationInSeconds)
-
+    let totalDuration = getCourseDuration(courseDetails)
     return res.status(200).json({
       success: true,
       data: {
@@ -366,10 +408,11 @@ exports.getFullCourseDetails = async (req, res) => {
       .populate({
         path: "instructor",
         populate: {
-          path: "additionalInfo",
+          path: "additionalDetails",
         },
       })
-      .populate("category") // .populate("ratingAndReviews")
+      .populate("category") 
+      .populate("ratingAndReviews")
       .populate({
         path: "courseContent",
         populate: {
@@ -383,7 +426,7 @@ exports.getFullCourseDetails = async (req, res) => {
       userId: userId,
     })
 
-    console.log("courseProgressCount : ", courseProgressCount)
+    // console.log("courseProgressCount : ", courseProgressCount)
 
     if (!courseDetails) {
       return res.status(400).json({
@@ -399,14 +442,6 @@ exports.getFullCourseDetails = async (req, res) => {
     //   });
     // }
 
-    let totalDurationInSeconds = 0
-    courseDetails.courseContent.forEach((content) => {
-      content.subSection.forEach((subSection) => {
-        const timeDurationInSeconds = parseInt(subSection.timeDuration)
-        totalDurationInSeconds += timeDurationInSeconds
-      })
-    })
-
     let SubsectionLength = 0
 
     courseDetails.courseContent.forEach((content)=>{
@@ -415,7 +450,7 @@ exports.getFullCourseDetails = async (req, res) => {
       })
     })
 
-    const totalDuration = convertSecondsToDuration(totalDurationInSeconds)
+    const totalDuration = getCourseDuration(courseDetails)
 
     return res.status(200).json({
       success: true,

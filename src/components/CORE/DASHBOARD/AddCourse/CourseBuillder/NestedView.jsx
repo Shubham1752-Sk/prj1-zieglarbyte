@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux"
 import {
   deleteSection,
   deleteSubSection,
-} from "../../../../../SERVICES/operations/CourseOperation"
+} from "../../../../../SERVICES/operations/CourseOperations"
 import { setCourse } from "../../../../../SLICES/CourseSlice"
 import ConfirmationModal from "../../../../COMMON/ConfirmationModal"
 import SubSectionModal from "./SubSectionModal"
