@@ -44,7 +44,7 @@ export const addCourseDetails = async (data, token) => {
 // edit the course details
 export const editCourseDetails = async(data) =>{
   let result = null
-  // console.log('token is: ',token)
+  console.log('token is: ',data)
   const snackId = enqueueSnackbar("Loading...",{persist:'true',variant:'info'})
   try{
     const response = await apiConnector("POST",EDIT_COURSE_API,data);

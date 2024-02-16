@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import Signup from './PAGES/Signup';
 import Login from './PAGES/Login';
 import Dashboard from './PAGES/Dashboard';
+import HomePage from './PAGES/HomePage';
 
 // components
 import OpenRoute from './components/CORE/AUTH/OpenRoute';
@@ -38,6 +39,7 @@ function App() {
   return (
     <div className="App bg-bg-yellow text-text-gray">
       <Routes>
+      <Route path='/' element={<HomePage /> }/>
         <Route
           path="login"
           element={
@@ -54,6 +56,7 @@ function App() {
             </OpenRoute>
           }
         />
+        
         <Route
           element={
             <PrivateRoute>

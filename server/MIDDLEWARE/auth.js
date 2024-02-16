@@ -10,7 +10,7 @@ exports.auth = async (req, res, next) => {
 		// console.log(req.header('Authoriztion'))
 		// console.log(req.header("Authorization").split(" ")[1])
 		// console.log(req.params)
-		const token = 	req.header("Authorization")?.split(" ")[1] ||
+		const token = 	req?.header("Authorization")?.split(" ")[1] ||
 						req.cookies.token ||
 						req.body.token ;
 

@@ -59,9 +59,12 @@ export default function PublishCourse() {
     const payload = {
       courseId: course._id,
       status: courseStatus,
+      token
     }
+    console.log(payload)
     setLoading(true)
-    const result = await editCourseDetails(payload, token)
+    console.log(token)
+    const result = await editCourseDetails(payload)
     if (result) {
       goToCourses()
     }

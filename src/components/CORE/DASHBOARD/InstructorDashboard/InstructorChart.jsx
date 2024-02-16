@@ -1,8 +1,8 @@
 import { useState } from "react"
-// import { Chart, registerables } from "chart.js"
+import { Chart, registerables } from "chart.js"
 import { Pie } from "react-chartjs-2"
 
-// Chart.register(...registerables)
+Chart.register(...registerables)
 
 export default function InstructorChart({ courses }) {
   // State to keep track of the currently selected chart
