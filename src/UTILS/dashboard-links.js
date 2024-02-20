@@ -2,6 +2,12 @@ import { ACCOUNT_TYPE } from "./constants"
 
 export const sidebarLinks = [
   {
+    id: 10,
+    name: 'Home',
+    path: '/',
+    icon: 'VscHome'
+  },
+  {
     id: 1,
     name: "My Profile",
     path: "/dashboard/my-profile",

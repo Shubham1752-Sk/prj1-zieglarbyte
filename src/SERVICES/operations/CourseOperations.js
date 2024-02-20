@@ -16,7 +16,8 @@ const {
     COURSE_DETAILS_API,
     GET_FULL_COURSE_DETAILS_AUTHENTICATED,
     CREATE_RATING_API,
-    LECTURE_COMPLETION_API
+    LECTURE_COMPLETION_API,
+    GET_ALL_COURSES_API
 } = courseEndpoints
 
 export const addCourseDetails = async (data, token) => {
@@ -343,4 +344,23 @@ export const createRating = async (data, token) => {
   }
   closeSnackbar(snackId)
   return success
+}
+
+export const getAllCourses = async(token)=>{
+  const snackID = enqueueSnackbar("Fetching Courses....",{variant:'info', persist:true})
+  let result = null;
+  try {
+    const response = await apiConnector('GET', GET_ALL_COURSES_API, null ,{Authorization:`Bearer ${token}`})
+
+    if(!response.data.success){
+      throw new Error("Unable to fetch Courses")
+    }
+    
+    closeSnackbar(snackID)
+    result = response?.data?.allCourses
+    
+  } catch (error) {
+    console.log("ERROR IN GET_ALL_COURSES_API....",error)
+  }
+  return result
 }

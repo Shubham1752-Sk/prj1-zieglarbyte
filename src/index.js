@@ -17,9 +17,9 @@ root.render(
           vertical: 'top',
           horizontal: 'center',
         }} >
-        <React.StrictMode>
+        
           <App />
-        </React.StrictMode>
+        
       </SnackbarProvider>
     </BrowserRouter>
   </Provider>

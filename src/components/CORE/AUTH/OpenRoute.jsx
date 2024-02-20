@@ -2,16 +2,17 @@
 import { enqueueSnackbar } from "notistack"
 import { useSelector } from "react-redux"
 import { Navigate } from "react-router-dom"
+import { memo } from "react"
 
-function OpenRoute({ children }) {
+const OpenRoute = memo(function OpenRoute({ children }) {
   const { token } = useSelector((state) => state.auth)
-  console.log('in the open Route')
+  
   if (token === null ) {
     return children
   } else {
-    enqueueSnackbar('You are Already logged In',{varient:'error'})
+    enqueueSnackbar('You are Already logged In',{variant:'error'})
     return (<Navigate to="/dashboard/my-profile" />)
   }
-}
+})
 
 export default OpenRoute

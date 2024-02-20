@@ -107,7 +107,7 @@ export default function CourseBuilderForm() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="flex flex-col space-y-2">
           <label className="text-sm text-richblack-5" htmlFor="sectionName">
-            Section Name <sup className="text-pink-200">*</sup>
+            Section Name <sup className="text-red-700">*</sup>
           </label>
           <input
             id="sectionName"
@@ -117,7 +117,7 @@ export default function CourseBuilderForm() {
             className="form-style w-full p-2 text-black"
           />
           {errors.sectionName && (
-            <span className="ml-2 text-xs tracking-wide text-pink-200">
+            <span className="ml-2 text-xs tracking-wide text-red-700">
               Section name is required
             </span>
           )}

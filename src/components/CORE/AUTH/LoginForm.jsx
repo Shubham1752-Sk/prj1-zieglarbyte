@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 import { login } from '../../../SERVICES/operations/AuthOperations'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { enqueueSnackbar } from 'notistack'
 
 const LoginForm = () => {
 
@@ -13,6 +14,15 @@ const LoginForm = () => {
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
 
+  const {token} = useSelector((state)=>state.auth)
+
+  useEffect(()=>{
+    document.title = "Login"
+    if(token){
+      enqueueSnackbar("You are Already Logged In!!",{variant:'error'})
+      navigate('/dashboard/my-profile')
+    }
+  },[token])
   const {
     register,
     handleSubmit,
@@ -20,13 +30,13 @@ const LoginForm = () => {
   } = useForm()
 
   const submitForm = (data) =>{
-  
     setLoading(true)
-    dispatch(login({
-      email: data.email,
-      password: data.password,
+    dispatch(login(
+      data.email,
+      data.password,
       navigate
-    }))
+    ))
+    setLoading(false)
   }
   return (
     <>

@@ -10,8 +10,9 @@ const {
 export function createCategory(setLoading, token, name, description) {
     setLoading(true);
     return async (dispatch) => {
-        console.log(name)
-        console.log(description)
+        // console.log(name)
+        // console.log(description)
+        dispatch(setLoading(true))
         try {
             const response = await apiConnector('POST', CREATE_CATEGORY, {
                 name,

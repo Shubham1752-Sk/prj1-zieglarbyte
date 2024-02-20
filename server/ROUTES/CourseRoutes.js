@@ -8,7 +8,8 @@ const {
     getInstructorCourses,
     getCourseDetails,
     getFullCourseDetails,
-    updateCourseProgress
+    updateCourseProgress,
+    getAllCourses
 } = require('../CONTROLLERS/Course.controller')
 
 const {
@@ -22,6 +23,17 @@ const {
     updateSubSection,
     deleteSubSection
 } = require('../CONTROLLERS/SubSection.controller')
+
+const {
+    createRating,
+    getAverageRating,
+    getAllRatingReview,
+  } = require("../CONTROLLERS/RatingandReview.controller")
+  
+// const {
+//     updateCourseProgress,
+//     getProgressPercentage,
+//   } = require("../CONTROLLERS/courseProgress.controller")
 
 const router = express.Router()
 
@@ -49,4 +61,11 @@ router.post("/getFullCourseDetails", auth, getFullCourseDetails)
 
 router.post("/updateCourseProgress", auth, isStudent, updateCourseProgress)
 
+router.get('/getallcourses',getAllCourses)
+
+router.post("/createRating", auth, isStudent, createRating)
+
+router.get("/getAverageRating", getAverageRating)
+
+router.get("/getReviews", getAllRatingReview)
 module.exports = router

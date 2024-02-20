@@ -103,7 +103,7 @@ export default function Upload({
           >
             <input {...getInputProps()} ref={inputRef} />
             <div className="grid aspect-square w-14 place-items-center rounded-full bg-pure-greys-800">
-              <FiUploadCloud className="text-2xl text-yellow-50" />
+              <FiUploadCloud className="text-2xl text-btn-red" />
             </div>
             <p className="mt-2 max-w-[200px] text-center text-sm text-richblack-200">
               Drag and drop an {!video ? "image" : "video"}, or click to {" "}

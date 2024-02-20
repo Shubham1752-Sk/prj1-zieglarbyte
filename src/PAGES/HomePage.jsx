@@ -1,44 +1,99 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 // import Sidebar from '../components/COMMON/Sidebar'
 import Sidebar from '../components/CORE/HOME/Sidebar'
 import { courseData } from '../UTILS/CourseData'
+import { getAllCourses } from '../SERVICES/operations/CourseOperations'
+import Spinner from "../components/COMMON/Spinner"
+import CourseDetails from '../components/CORE/HOME/CourseDetails'
 
 const HomePage = () => {
-    console.log(courseData[0])
+
+    const [courses, setCourses] = useState([])
+    const [selectedCourse, setSelectedCourse] = useState()
+    const [loading, setLoading] = useState(true)
+
+    const getCourses = async () => {
+        const result = await getAllCourses()
+        if (result) {
+            setCourses(result)
+        }
+        setSelectedCourse(result[0])
+    }
+
+    useEffect(() => {
+        document.title = "Home | Courses"
+        setLoading(true)
+        getCourses()
+        setLoading(false)
+    }, [])
+
+    useEffect(() => {
+        console.log(selectedCourse)
+    }, [selectedCourse])
+    // console.log(selectedCourse)
     return (
-        <div className='h-screen w-screen flex '>
-            <Sidebar />
-            <div className='w-full  flex-1 justify-center items-center p-2 gap-4'>
-                <div className='w-full h-full flex flex-col'>
-                    <div className='p-2'>
-                        <h1 className='text-5xl font-serif font-semibold leading-15 text-btn-red'>{courseData[0].heading}</h1>
-                        <p className='mt-2 leading-7 text-lg'>{courseData[0].description}</p>
-                        <p className='mt-2 text-2xl font-serif text-btn-red font-medium'>Duration: <span className='text-text-gray font-normal'>{courseData[0].duration} hours</span></p>
-                    </div>
-                    <div className='w-full h-full flex justify-between p-1 gap-2 '>
-                        <div className='w-fit h-full '>
-                            <p className='text-xl ml-1 font-serif text-btn-red font-medium'>Content to be covered:-</p>
-                            {
-                                courseData[0].Content.map((content) => {
-                                    return <li className=' space-y-4 m-4 ml-8 text'>{content}</li>
-                                })
-                            }
-                        </div>
-                        <div className='w-6/12 h-full mr-20 flex flex-col justify-center items-center'>
-                            <div className='max-w-[400px] h-[400px] mr-20'>
-                                <img className='w-full h-full rounded-full' src={courseData[0].image} alt={courseData[0].imgAltText} />
+        <div className='h-screen w-screen flex overflow-hidden '>
+            {
+                loading ? <Spinner /> :
+                    <>
+                        <div className="relative flex min-h-[calc(100vh)]">
+                            <Sidebar courses={courses} setSelectedCourse={setSelectedCourse} selectedCourse={selectedCourse} />
+                            <div className="h-[calc(100vh-3.5rem)] flex-1 overflow-auto ">
+                                <div className="mx-auto w-fit py-10">
+                                    {
+                                        selectedCourse && <CourseDetails selectedCourse={selectedCourse} />
+                                    }
+                                </div>
                             </div>
-                            <div className='mx-auto'>
+                        </div>
+                        {/* <Sidebar courses={courses} setSelectedCourse={setSelectedCourse} selectedCourse={selectedCourse} /> */}
+                        {/* <div className='w-full  flex-1 justify-center items-center p-2 gap-4'>
+                            <div className='w-full h-full '> */}
+                                {/* <img src={selectedCourse.thumbnail} alt="thumbnail" className=' aspect-auto w-11/12 mx-auto lg:hidden'/> */}
+                                {
+                                    
+                                }
+                                {/* <div className='p-2'>
+                        <h1 className='text-2xl sm:text-5xl font-serif font-semibold leading-15 text-btn-red'>{selectedCourse?.courseName}</h1>
+                        <p className='mt-2 leading-7 text-base sm:text-lg'>{selectedCourse?.courseDescription}</p>
+                        <p className='mt-2 text-lg sm:text-2xl font-serif text-btn-red font-medium'>Duration: <span className='text-text-gray font-normal'>{selectedCourse?.duration} </span></p>
+                    </div>
+                    <div className='w-full h-fit bg-white flex justify-between p-1 '>
+                        <div className='w-4/2 h-fit  '>
+                            <p className=' text-base sm:text-xl ml-1 font-serif text-btn-red font-medium'>Content to be covered:-</p>
+                            {
+                                selectedCourse?.whatYouWillLearn?.split('\n').map((learning,index)=>{
+                                    return <li key={index}
+                                        className='m-2 ml-6 text-base sm:text-lg'
+                                    >{learning}</li>
+                                })   
+                            }
+                            <div className='mx-auto block md:hidden'>
                                 <button className='bg-btn-red w-fit text-white mr-14 text-2xl font-semibold rounded-lg p-2 mt-6'>
                                     Continue
                                 </button>
                             </div>
                         </div>
+                        <div className='w-6/12 hidden md:flex h-fit mr-20 flex-col justify-between items-center'>
+                            <div className='md:max-w-[300px] h-[220px] md:max-h-[270px] lg:h-[300px]  mr-1 md:mr-20'>
+                                <img className='w-full h-full rounded-full' src={selectedCourse?.thumbnail} alt="Thumbnail-img" />
+                            </div>
+                            <div >
+                                <button className='bg-btn-red w-fit mx-auto text-white mr-14 text-2xl font-semibold rounded-lg p-2 mt-6'>
+                                    Continue
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-
-            </div>
+                    {
+                        selectedCourse && <CourseDetails selectedCourse={selectedCourse} />
+                    } */}
+                            {/* </div>
+                        </div> */}
+                    </>
+            }
         </div>
+
     )
 }
 

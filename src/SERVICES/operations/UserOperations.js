@@ -12,7 +12,7 @@ const {
 
 export function getUserDetails(token, navigate) {
     return async (dispatch) => {
-      const snackId = enqueueSnackbar("Loading...", {vairent: 'success'})
+      const snackId = enqueueSnackbar("Loading...", {vairent: 'info'})
       dispatch(setLoading(true))
       try {
         const response = await apiConnector("GET", GET_USER_DETAILS_API , null, {
@@ -29,7 +29,7 @@ export function getUserDetails(token, navigate) {
         dispatch(setUser({ ...response.data.data, image: userImage }))
         dispatch(setLoading(false))
         closeSnackbar(snackId)
-        navigate('/dashboard/my-profile')
+        // navigate('/dashboard/my-profile')
       } catch (error) {
         dispatch(logout(navigate))
         console.log("GET_USER_DETAILS API ERROR............", error)

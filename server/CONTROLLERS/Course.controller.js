@@ -511,3 +511,41 @@ exports.updateCourseProgress = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" })
   }
 }
+
+exports.getAllCourses = async (req,res) =>{
+  try{
+    const courses=await Course.find().sort({createdAt: -1})
+    .populate("instructor")
+    .populate({
+      path: "courseContent",
+      model: 'Section',
+      populate: {
+        path: "subSection",
+        model: 'SubSection',
+        select: "-videoUrl",
+      },
+    })
+    
+    let allCourses = []
+  
+    for(let course of courses){
+      const duration = getCourseDuration(course)
+      const courseObject = {...course, duration}
+      courseObject.duration = duration;
+      const courseWithDuration = {...courseObject._doc, duration}
+      allCourses.push(courseWithDuration);
+    }
+    console.log(allCourses)
+    return res.status(200).json({
+      success: true,
+      allCourses
+    })
+  }
+  catch(error){
+    console.log(error)
+    return res.status(500).json({
+      success: false,
+      message: `Interval Server Error while Fetching all Courses ${error}`
+    })
+  }
+}

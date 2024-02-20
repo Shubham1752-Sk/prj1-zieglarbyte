@@ -8,6 +8,7 @@ import Signup from './PAGES/Signup';
 import Login from './PAGES/Login';
 import Dashboard from './PAGES/Dashboard';
 import HomePage from './PAGES/HomePage';
+import ViewCourse from './PAGES/ViewCourse';
 
 // components
 import OpenRoute from './components/CORE/AUTH/OpenRoute';
@@ -19,6 +20,9 @@ import AddCourse from './components/CORE/DASHBOARD/AddCourse';
 import Instructor from "./components/CORE/DASHBOARD/Instructor"
 import MyCourses from "./components/CORE/DASHBOARD/MyCourses"
 import EditCourse from './components/CORE/DASHBOARD/EditCourse';
+import EnrolledCourses from "./components/CORE/DASHBOARD/EnrolledCourses"
+import Cart from "./components//CORE/DASHBOARD/Cart"
+import VideoDetails from './components/CORE/DASHBOARD/ViewCourse/VideoDetails';
 
 // functions
 import { getUserDetails } from './SERVICES/operations/UserOperations';
@@ -31,7 +35,6 @@ function App() {
   const { user, token } = useSelector((state) => state.auth)
 
   useEffect(() => {
-
     if (token) {
       dispatch(getUserDetails(token, navigate))
     }
@@ -42,16 +45,12 @@ function App() {
       <Route path='/' element={<HomePage /> }/>
         <Route
           path="login"
-          element={
-            <OpenRoute>
-              <Login />
-            </OpenRoute>
-          }
+          element={<Login />}
         />
         <Route
           path="signup"
           element={
-            <OpenRoute user={user}>
+            <OpenRoute>
               <Signup />
             </OpenRoute>
           }
@@ -82,6 +81,35 @@ function App() {
               <Route
                 path="dashboard/edit-course/:courseId"
                 element={<EditCourse />}
+              />
+            </>
+          )}
+          {/* Routes for students only */}
+          {user?.accountType === ACCOUNT_TYPE.STUDENT && (
+            <>
+              <Route
+                path="dashboard/enrolled-courses"
+                element={<EnrolledCourses />}
+              />
+              <Route path="/dashboard/cart" element={<Cart />} />
+              
+            </>
+          )}
+        </Route>
+
+        {/* For the watching course lectures */}
+        <Route
+          element={
+            <PrivateRoute>
+              <ViewCourse />
+            </PrivateRoute>
+          }
+        >
+          {user?.accountType === ACCOUNT_TYPE.STUDENT && (
+            <>
+              <Route
+                path="view-course/:courseId/section/:sectionId/sub-section/:subSectionId"
+                element={<VideoDetails />}
               />
             </>
           )}

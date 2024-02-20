@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 import { signup } from '../../../SERVICES/operations/AuthOperations'
@@ -32,7 +32,7 @@ const SignupForm = memo( function SignupForm({adminPresent}){
         }
         setLoading(true)
         
-        console.log(accountType)
+        // console.log(accountType)
         dispatch(signup({
             accountType: accountType,
             firstName: data.firstName,
@@ -43,6 +43,9 @@ const SignupForm = memo( function SignupForm({adminPresent}){
             contactNumber: data.contactNumber
         }))
         setLoading(false)
+        if(!adminPresent){
+            navigate('/login')
+        }
     }
 
     const tabData = [
