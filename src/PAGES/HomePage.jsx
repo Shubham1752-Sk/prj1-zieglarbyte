@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 // import Sidebar from '../components/COMMON/Sidebar'
 import Sidebar from '../components/CORE/HOME/Sidebar'
-import { courseData } from '../UTILS/CourseData'
+// import { courseData } from '../UTILS/CourseData'
 import { getAllCoursesHomePage } from '../SERVICES/operations/CourseOperations'
 import Spinner from "../components/COMMON/Spinner"
 import CourseDetails from '../components/CORE/HOME/CourseDetails'
