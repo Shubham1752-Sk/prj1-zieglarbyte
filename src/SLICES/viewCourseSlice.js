@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
+  courseName: "",
   courseSectionData: [],
   courseEntireData: [],
   completedLectures: [],
@@ -11,6 +12,9 @@ const viewCourseSlice = createSlice({
   name: "viewCourse",
   initialState,
   reducers: {
+    setCourseName: (state, action) => {
+      state.courseName = action.payload
+    },
     setCourseSectionData: (state, action) => {
       state.courseSectionData = action.payload
     },
@@ -30,12 +34,14 @@ const viewCourseSlice = createSlice({
       state.courseSectionData = []
       state.courseEntireData = []
       state.completedLectures = []
+      state.courseName = ""
       state.totalNoOfLectures = 0
     },
   },
 })
 
 export const {
+  setCourseName,
   setCourseSectionData,
   setEntireCourseData,
   setTotalNoOfLectures,

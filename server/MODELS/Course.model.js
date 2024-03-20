@@ -19,6 +19,9 @@ const courseSchema = new mongoose.Schema({
         type: Number,
 
     },
+    discountedPrice:{
+        type: Number
+    },
     thumbnail: {
         type: String,
     },

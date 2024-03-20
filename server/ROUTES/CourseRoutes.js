@@ -1,5 +1,5 @@
 const express = require('express')
-const { auth, isInstructor, isStudent } = require('../MIDDLEWARE/auth')
+const { auth, isInstructor, isStudent, isAdmin } = require('../MIDDLEWARE/auth')
 
 const {
     createCourse,
@@ -61,7 +61,8 @@ router.post("/getFullCourseDetails", auth, getFullCourseDetails)
 
 router.post("/updateCourseProgress", auth, isStudent, updateCourseProgress)
 
-router.get('/getallcourses',getAllCourses)
+router.get('/getallcourses',auth, getAllCourses)
+router.get('/getallcourseshome', getAllCourses)
 
 router.post("/createRating", auth, isStudent, createRating)
 

@@ -2,36 +2,34 @@ import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 
-import { fetchInstructorCourses } from "../../../SERVICES/operations/CourseOperations"
-import { getInstructorData } from "../../../SERVICES/operations/UserOperations"
+import { getAllCourses } from "../../../SERVICES/operations/CourseOperations"
 import InstructorChart from "./InstructorDashboard/InstructorChart"
 
-export default function Instructor() {
+export default function AdminDashboard() {
   const { token, user } = useSelector((state) => state.auth)
   const [loading, setLoading] = useState(false)
-  const [instructorData, setInstructorData] = useState(null)
   const [courses, setCourses] = useState([])
 
   useEffect(() => {
     ;(async () => {
       setLoading(true)
-      const instructorApiData = await getInstructorData(token)
-      const result = await fetchInstructorCourses(token)
-      console.log(instructorApiData)
-      if (instructorApiData.length) setInstructorData(instructorApiData)
+      
+      const result = await getAllCourses(token)
+      
       if (result) {
         setCourses(result)
       }
+      // console.log(courses)
       setLoading(false)
     })()
   }, [])
 
-  const totalAmount = instructorData?.reduce(
+  const totalAmount = courses?.reduce(
     (acc, curr) => acc + curr.totalAmountGenerated,
     0
   )
 
-  const totalStudents = instructorData?.reduce(
+  const totalStudents = courses?.reduce(
     (acc, curr) => acc + curr.totalStudentsEnrolled,
     0
   )
@@ -53,7 +51,7 @@ export default function Instructor() {
           <div className="my-4 flex h-[450px] space-x-4">
             {/* Render chart / graph */}
             {totalAmount > 0 || totalStudents > 0 ? (
-              <InstructorChart courses={instructorData} />
+              <InstructorChart courses={courses} />
             ) : (
               <div className="flex-1 rounded-md bg-richblack-800 p-6">
                 <p className="text-lg font-bold text-richblack-5">Visualize</p>
@@ -87,8 +85,8 @@ export default function Instructor() {
               </div>
             </div>
           </div>
-          <div className="rounded-md bg-richblack-800 p-6">
-            {/* Render 3 courses */}
+          {/* <div className="rounded-md bg-richblack-800 p-6">
+            Render 3 courses
             <div className="flex items-center justify-between">
               <p className="text-lg font-bold text-richblack-5">Your Courses</p>
               <Link to="/dashboard/my-courses">
@@ -109,7 +107,7 @@ export default function Instructor() {
                     </p>
                     <div className="mt-1 flex items-center space-x-2">
                       <p className="text-xs font-medium text-richblack-300">
-                        {course.studentsEnroled.length} students
+                        {course.totalStudentsEnrolled} students
                       </p>
                       <p className="text-xs font-medium text-richblack-300">
                         |
@@ -122,7 +120,7 @@ export default function Instructor() {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
       ) : (
         <div className="mt-20 rounded-md bg-richblack-800 p-6 py-20">

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 // import Sidebar from '../components/COMMON/Sidebar'
 import Sidebar from '../components/CORE/HOME/Sidebar'
 import { courseData } from '../UTILS/CourseData'
-import { getAllCourses } from '../SERVICES/operations/CourseOperations'
+import { getAllCoursesHomePage } from '../SERVICES/operations/CourseOperations'
 import Spinner from "../components/COMMON/Spinner"
 import CourseDetails from '../components/CORE/HOME/CourseDetails'
 
@@ -13,7 +13,7 @@ const HomePage = () => {
     const [loading, setLoading] = useState(true)
 
     const getCourses = async () => {
-        const result = await getAllCourses()
+        const result = await getAllCoursesHomePage()
         if (result) {
             setCourses(result)
         }
@@ -36,14 +36,14 @@ const HomePage = () => {
             {
                 loading ? <Spinner /> :
                     <>
-                        <div className="relative flex min-h-[calc(100vh)]">
+                        <div className="relative flex h-100vh">
                             <Sidebar courses={courses} setSelectedCourse={setSelectedCourse} selectedCourse={selectedCourse} />
-                            <div className="h-[calc(100vh-3.5rem)] flex-1 overflow-auto ">
-                                <div className="mx-auto w-fit py-10">
+                            <div className="h-full md:w-[calc(100vw-10vw)] overflow-y-auto overflow-x-hidden">
+                                <div className='p-4'>
                                     {
                                         selectedCourse && <CourseDetails selectedCourse={selectedCourse} />
                                     }
-                                </div>
+                                </div>                                
                             </div>
                         </div>
                         {/* <Sidebar courses={courses} setSelectedCourse={setSelectedCourse} selectedCourse={selectedCourse} /> */}

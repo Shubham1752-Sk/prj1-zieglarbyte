@@ -10,6 +10,7 @@ export default function Upload({
   name,
   label,
   register,
+  docSelected,
   setValue,
   errors,
   video = false,
@@ -23,6 +24,8 @@ export default function Upload({
   )
   const inputRef = useRef(null)
 
+
+  console.log(docSelected)
   const onDrop = (acceptedFiles) => {
     const file = acceptedFiles[0]
     // console.log("preview file before reading",previewFile)
@@ -51,7 +54,7 @@ export default function Upload({
   }
 
   useEffect(() => {
-    register(name, { required: true })
+    register(name, { required: docSelected? true : false })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [register])
 
@@ -64,7 +67,7 @@ export default function Upload({
   return (
     <div className="flex flex-col space-y-2">
       <label className="text-sm text-richblack-5" htmlFor={name}>
-        {label} {!viewData && <sup className="text-pink-200">*</sup>}
+        {label} {!viewData && <sup className="text-red-700">*</sup>}
       </label>
       <div
         className={`${
@@ -105,6 +108,7 @@ export default function Upload({
             <div className="grid aspect-square w-14 place-items-center rounded-full bg-pure-greys-800">
               <FiUploadCloud className="text-2xl text-btn-red" />
             </div>
+            {docSelected}
             <p className="mt-2 max-w-[200px] text-center text-sm text-richblack-200">
               Drag and drop an {!video ? "image" : "video"}, or click to {" "}
               <span className="font-semibold text-btn-red" onClick={()=>inputRef.current.click()}>Browse</span> a
@@ -118,7 +122,7 @@ export default function Upload({
         )}
       </div>
       {errors[name] && (
-        <span className="ml-2 text-xs tracking-wide text-pink-200">
+        <span className="ml-2 text-xs tracking-wide text-red-700">
           {label} is required
         </span>
       )}

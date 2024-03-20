@@ -4,11 +4,13 @@ import { IoIosArrowBack } from "react-icons/io"
 import { useDispatch, useSelector } from "react-redux"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { resetViewCourse } from "../../../../SLICES/viewCourseSlice"
+import { generateCertificateData } from "../../../../SERVICES/operations/UserOperations"
 // import { certificate } from "../../../utils/certificateTemplate"
 // import { PDFDocument, rgb } from "pdf-lib"
 // import certificate from "../../../assets/certificate.pdf"
 
 import IconBtn from "../../../COMMON/IconBtn"
+import { setData } from "../../../../SLICES/certificate"
 // import Certificate from "./Certificate"
 
 export default function VideoDetailsSidebar({ setReviewModal, setViewCertificate, setCertificatePayload }) {
@@ -21,6 +23,7 @@ export default function VideoDetailsSidebar({ setReviewModal, setViewCertificate
   const location = useLocation()
   const { sectionId, subSectionId } = useParams()
   const {
+    courseName,
     courseSectionData,
     courseEntireData,
     totalNoOfLectures,
@@ -46,83 +49,33 @@ export default function VideoDetailsSidebar({ setReviewModal, setViewCertificate
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseSectionData, courseEntireData, location.pathname, ])
 
-  const { user } = useSelector((state) => state.auth)
+  const { user, token } = useSelector((state) => state.auth)
 
   const generateCertificate = async () => {
+
+      await dispatch(generateCertificateData(`${user.firstName} ${user.lastName}`,courseName, token)).then(
+        navigate(`/certificate`)
+      )
   
-    const payload = {
-      courseName: courseEntireData.courseName,
-      instructorName: `${courseEntireData.instructor.firstName} ${courseEntireData.instructor.lastName}`,
-      userName: `${user.firstName} ${user.lastName}`,
-      dateofCompletion: new Date().toLocaleDateString('en-US')
-    }
-    console.log(payload)
-    setCertificatePayload(payload)
-    setViewCertificate(true)
-    // const generatedCertificate = certificateTemplate(userName, courseName, instructorName, dateofCompletion)
-    // setCertificateURL(certificate(userName, courseName, instructorName, dateofCompletion))
-    // console.log(certificateURL)
-    // document.querySelector("#certificate").src = generatedCertificate
-    
-    // // alert("Download Certiificate")
-    // console.log(courseEntireData)
-
-    // const courseName= courseEntireData.courseName
-    // const payload = {
-    //   courseName: courseEntireData.courseName,
-    //   instructorName: `${courseEntireData.instructor.firstName} ${courseEntireData.instructor.lastName}`,
-    //   userName: `${user.firstName} ${user.lastName}`,
-    //   dateofCompletion: new Date().toLocaleDateString('en-US')
-    // }
-    // console.log(payload)
-
-    // const execBytes = await fetch(certificate).then((res)=>{
-    //   return res.arrayBuffer()
-    // });
-
-    // const pdfDoc = await PDFDocument.load(execBytes)
-    // console.log(pdfDoc)
-
-    // const uri = await pdfDoc.saveAsBase64({dataUri: true})
-    // // console.log(uri)
-    // document.querySelector("#certificate").src = uri;
-
-    // const pages = pdfDoc.getPages();
-    // const firstPg = pages[0];
-
-    // firstPg.drawText(courseName,{
-    //   x : 35, y : 789 , size : 12,
-    // })
-    // const url = window.URL.createObjectURL(uri);
-    // const link = document.createElement('a');
-    // link.href = url;
-    //   link.download = 'downloaded-file';
-
-    //   // Append the link to the document
-    //   document.body.appendChild(link);
-
-    //   // Trigger the download
-    //   link.click();
-    // const pdfBytes = await pdfDoc.save()
   }
 
   return (
     <>
-      <div className=" relative flex h-[calc(100vh-3.5rem)] w-[320px] max-w-[350px] flex-col border-r-[1px] border-r-richblack-700 bg-richblack-800">
+      <div className=" relative flex h-[calc(100vh-3.5rem)]  w-3/12 flex-col border-r-[1px] border-r-richblack-700 bg-richblack-800">
         <div className="mx-5 flex flex-col items-start justify-between gap-2 gap-y-4 border-b border-richblack-600 py-5 text-lg font-bold text-richblack-25">
           <div className="flex w-full items-center justify-between ">
             <div
               onClick={() => {
                 navigate(`/dashboard/enrolled-courses`)
               }}
-              className="flex h-[35px] w-[35px] items-center justify-center rounded-full bg-richblack-100 p-1 text-richblack-700 hover:scale-90"
+              className="flex h-[35px] w-auto sm:w-[35px] items-center justify-center rounded-full bg-richblack-100 sm:p-1 text-richblack-700 hover:scale-90"
               title="back"
             >
               <IoIosArrowBack size={30} onClick={() => dispatch(resetViewCourse())} />
             </div>
             <IconBtn
               text="Add Review"
-              customClasses="ml-auto"
+              customClasses="ml-auto text-white"
               onclick={() => setReviewModal(true)}
             />
           </div>
@@ -167,7 +120,7 @@ export default function VideoDetailsSidebar({ setReviewModal, setViewCertificate
                   {course.subSection.map((topic, i) => (
                     <div
                       className={`flex gap-3  px-5 py-2 ${videoBarActive === topic._id
-                          ? "bg-yellow-200 font-semibold text-richblack-800"
+                          ? "bg-yellow-500 text-white font-semibold text-richblack-800"
                           : "hover:bg-richblack-900"
                         } `}
                       key={i}
@@ -192,7 +145,8 @@ export default function VideoDetailsSidebar({ setReviewModal, setViewCertificate
           ))}
         </div>
         {completedLectures.length === totalNoOfLectures && (
-          <div className="w-10/12 mx-auto flex justify-center items-center mt-4 p-2 py-4 rounded-md bg-yellow-100 text-gray-500 font-bold">
+          <div className="w-10/12 mx-auto flex justify-center text-lg
+           text-white items-center mt-4 p-2 py-4 rounded-md bg-btn-red font-bold">
             <button onClick={generateCertificate}>
               Download Certificate 
             </button>

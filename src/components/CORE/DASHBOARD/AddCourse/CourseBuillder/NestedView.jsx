@@ -114,13 +114,17 @@ export default function NestedView({ handleChangeEditSectionName }) {
                     onClick={(e) => e.stopPropagation()}
                     className="flex items-center gap-x-3"
                   >
-                    <button
+                    {
+                      !data.isMedia && (
+                        <button
                       onClick={() =>
                         setEditSubSection({ ...data, sectionId: section._id })
                       }
                     >
                       <MdEdit className="text-xl text-richblack-300" />
                     </button>
+                      )
+                    }
                     <button
                       onClick={() =>
                         setConfirmationModal({
@@ -145,7 +149,7 @@ export default function NestedView({ handleChangeEditSectionName }) {
                 className="mt-3 flex items-center gap-x-1 "
               >
                 <FaPlus className="text-lg" />
-                <p>Add Lecture</p>
+                <p>Add Lecture/Documents</p>
               </button>
             </div>
           </details>

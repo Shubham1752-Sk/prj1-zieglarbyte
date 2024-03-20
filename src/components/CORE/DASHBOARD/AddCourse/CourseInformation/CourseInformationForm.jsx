@@ -57,6 +57,7 @@ export default function CourseInformationForm() {
       setValue("courseTitle", course.courseName)
       setValue("courseShortDesc", course.courseDescription)
       setValue("coursePrice", course.price)
+      setValue("discountedPrice",course?.discountedPrice)
       setValue("courseTags", course.tag)
       setValue("courseBenefits", course.whatYouWillLearn)
       setValue("courseCategory", course.category)
@@ -73,6 +74,7 @@ export default function CourseInformationForm() {
     // console.log("changes after editing form values:", currentValues)
     if (
       currentValues.courseTitle !== course.courseName ||
+      currentValues.discountedPrice !== course.discountedPrice ||
       currentValues.courseShortDesc !== course.courseDescription ||
       currentValues.coursePrice !== course.price ||
       currentValues.courseTags.toString() !== course.tag.toString() ||
@@ -107,6 +109,9 @@ export default function CourseInformationForm() {
         if (currentValues.coursePrice !== course.price) {
           payloadData.price = data.coursePrice
         }
+        if (currentValues.discountedPrice !== course.discountedPrice) {
+          payloadData.discountedPrice = data.discountedPrice
+        }
         if (currentValues.courseTags.toString() !== course.tag.toString()) {
           payloadData.tag = JSON.stringify(data.courseTags)
         }
@@ -127,6 +132,7 @@ export default function CourseInformationForm() {
           payloadData.thumbnailImage = data.courseImage
         }
         payloadData.token = token
+        
         setLoading(true)
         const result = await editCourseDetails(payloadData, courseId, token)
         setLoading(false)
@@ -170,7 +176,7 @@ export default function CourseInformationForm() {
       {/* Course Title */}
       <div className="flex flex-col space-y-2">
         <label className="text-sm text-richblack-5" htmlFor="courseTitle">
-          Course Title <sup className="text-pink-200">*</sup>
+          Course Title <sup className="text-red-700">*</sup>
         </label>
         <input
           id="courseTitle"
@@ -179,7 +185,7 @@ export default function CourseInformationForm() {
           className="form-style w-full p-2 text-black placeholder:text-black "
         />
         {errors.courseTitle && (
-          <span className="ml-2 text-xs tracking-wide text-pink-200">
+          <span className="ml-2 text-xs tracking-wide text-red-700">
             Course title is required
           </span>
         )}
@@ -187,7 +193,7 @@ export default function CourseInformationForm() {
       {/* Course Short Description */}
       <div className="flex flex-col space-y-2">
         <label className="text-sm text-richblack-5" htmlFor="courseShortDesc">
-          Course Short Description <sup className="text-pink-200">*</sup>
+          Course Short Description <sup className="text-red-700">*</sup>
         </label>
         <textarea
           id="courseShortDesc"
@@ -196,7 +202,7 @@ export default function CourseInformationForm() {
           className="form-style resize-x-none min-h-[130px] p-2 w-full text-black placeholder:text-black"
         />
         {errors.courseShortDesc && (
-          <span className="ml-2 text-xs tracking-wide text-pink-200">
+          <span className="ml-2 text-xs tracking-wide text-red-700">
             Course Description is required
           </span>
         )}
@@ -204,7 +210,7 @@ export default function CourseInformationForm() {
       {/* Course Price */}
       <div className="flex flex-col space-y-2">
         <label className="text-sm text-richblack-5" htmlFor="coursePrice">
-          Course Price <sup className="text-pink-200">*</sup>
+          Course Price <sup className="text-red-700">*</sup>
         </label>
         <div className="relative">
           <input
@@ -221,8 +227,28 @@ export default function CourseInformationForm() {
           />
           <HiOutlineCurrencyRupee className="absolute left-3 top-1/2 inline-block -translate-y-1/2 text-2xl text-richblack-400" />
         </div>
-        {errors.coursePrice && (
-          <span className="ml-2 text-xs tracking-wide text-pink-200">
+      </div>
+        {/* Discount Price */}
+        <div className="flex flex-col space-y-2">
+        <label className="text-sm text-richblack-5" htmlFor="discountedPrice">
+          Discount Price <sup className="text-red-700">*</sup>
+        </label>
+        <div className="relative">
+          <input
+            id="discountedPrice"
+            placeholder="Enter Course Price"
+            {...register("discountedPrice", {
+              valueAsNumber: true,
+              pattern: {
+                value: /^(0|[1-9]\d*)(\.\d+)?$/,
+              },
+            })}
+            className="form-style w-full p-2 !pl-12 text-black placeholder:text-black"
+          />
+          <HiOutlineCurrencyRupee className="absolute left-3 top-1/2 inline-block -translate-y-1/2 text-2xl text-richblack-400" />
+        </div>
+        {errors.discountedPrice && (
+          <span className="ml-2 text-xs tracking-wide text-red-700">
             Course Price is required
           </span>
         )}
@@ -230,7 +256,7 @@ export default function CourseInformationForm() {
       {/* Course Category */}
       <div className="flex flex-col space-y-2">
         <label className="text-sm text-richblack-5" htmlFor="courseCategory">
-          Course Category <sup className="text-pink-200">*</sup>
+          Course Category <sup className="text-red-700">*</sup>
         </label>
         <select
           {...register("courseCategory", { required: true })}
@@ -249,7 +275,7 @@ export default function CourseInformationForm() {
             ))}
         </select>
         {errors.courseCategory && (
-          <span className="ml-2 text-xs tracking-wide text-pink-200">
+          <span className="ml-2 text-xs tracking-wide text-red-700">
             Course Category is required
           </span>
         )}
@@ -276,7 +302,7 @@ export default function CourseInformationForm() {
       {/* Benefits of the course */}
       <div className="flex flex-col space-y-2">
         <label className="text-sm text-richblack-5" htmlFor="courseBenefits">
-          Benefits of the course <sup className="text-pink-200">*</sup>
+          Content of the course <sup className="text-red-700">*</sup>
         </label>
         <textarea
           id="courseBenefits"
@@ -285,7 +311,7 @@ export default function CourseInformationForm() {
           className="form-style resize-x-none min-h-[130px] p-2 w-full text-black placeholder:text-black"
         />
         {errors.courseBenefits && (
-          <span className="ml-2 text-xs tracking-wide text-pink-200">
+          <span className="ml-2 text-xs tracking-wide text-red-700">
             Benefits of the course is required
           </span>
         )}

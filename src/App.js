@@ -9,6 +9,7 @@ import Login from './PAGES/Login';
 import Dashboard from './PAGES/Dashboard';
 import HomePage from './PAGES/HomePage';
 import ViewCourse from './PAGES/ViewCourse';
+import VerifyCertificate from './PAGES/VerifyCertificate';
 
 // components
 import OpenRoute from './components/CORE/AUTH/OpenRoute';
@@ -17,16 +18,19 @@ import MyProfile from './components/CORE/DASHBOARD/MyProfile';
 import AddCategory from "./components/CORE/DASHBOARD/AddCategory"
 import AddUser from './components/CORE/DASHBOARD/AddUser';
 import AddCourse from './components/CORE/DASHBOARD/AddCourse';
-import Instructor from "./components/CORE/DASHBOARD/Instructor"
-import MyCourses from "./components/CORE/DASHBOARD/MyCourses"
+import AdminDashboard from './components/CORE/DASHBOARD/AdminDashboard';
+import MyCourses from "./components/CORE/DASHBOARD/MyCourses";
 import EditCourse from './components/CORE/DASHBOARD/EditCourse';
 import EnrolledCourses from "./components/CORE/DASHBOARD/EnrolledCourses"
-import Cart from "./components//CORE/DASHBOARD/Cart"
+import Cart from "./components//CORE/DASHBOARD/Cart";
 import VideoDetails from './components/CORE/DASHBOARD/ViewCourse/VideoDetails';
+import Settings from "./components/CORE/DASHBOARD/Settings";
+import Certificate from './components/CORE/DASHBOARD/ViewCourse/Certificate';
 
 // functions
 import { getUserDetails } from './SERVICES/operations/UserOperations';
 import { ACCOUNT_TYPE } from './UTILS/constants';
+
 
 function App() {
 
@@ -70,12 +74,12 @@ function App() {
             <>
               <Route path='dashboard/add-category' element={<AddCategory />} />
               <Route path='dashboard/add-user' element={<AddUser />} />
+              <Route path='dashboard/admin' element={<AdminDashboard />} />
             </>
           )}
           {/* Routes for Instructors Only */}
           {user?.accountType === ACCOUNT_TYPE.INSTRUCTOR && (
             <>
-              <Route path="dashboard/instructor" element={<Instructor />} />
               <Route path="dashboard/add-course" element={<AddCourse />} />
               <Route path="dashboard/my-courses" element={<MyCourses />} />
               <Route
@@ -92,9 +96,9 @@ function App() {
                 element={<EnrolledCourses />}
               />
               <Route path="/dashboard/cart" element={<Cart />} />
-              
             </>
           )}
+
         </Route>
 
         {/* For the watching course lectures */}
@@ -111,10 +115,12 @@ function App() {
                 path="view-course/:courseId/section/:sectionId/sub-section/:subSectionId"
                 element={<VideoDetails />}
               />
+              <Route path='/certificate' element={<Certificate/>} />
             </>
           )}
         </Route>
-
+        <Route path='dashboard/settings' element={<Settings />} />
+        <Route path='/verify-certificate/:certificateId' element={<VerifyCertificate/>} />
       </Routes>
     </div>
 

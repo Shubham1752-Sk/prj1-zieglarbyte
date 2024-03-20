@@ -1,17 +1,22 @@
 // Import necessary modules
 const Section = require("../MODELS/Section.model")
 const SubSection = require("../MODELS/SubSection.model")
-const { uploadImageToCloudinary } = require("../utils/imageUploader")
+const Post = require('../MODELS/Post.model')
+const { uploadImageToCloudinary } = require("../UTILS/imageUploader")
 
 // Create a new sub-section for a given section
 exports.createSubSection = async (req, res) => {
   try {
     // Extract necessary information from the request body
-    const { sectionId, title, description, video } = req.body
+    const { sectionId, title, description, video, post } = req.body
+
+    console.log(post)
+    console.log(video)
+
     // const video = req.files.video 
 
     // Check if all necessary fields are provided
-    if (!sectionId || !title || !description || !video) {
+    if (!sectionId || !title ) {
       return res
         .status(404)
         .json({ success: false, message: "All Fields are Required" })
@@ -19,25 +24,53 @@ exports.createSubSection = async (req, res) => {
     // console.log(video)
 
     // Upload the video file to Cloudinary
-    const uploadDetails = await uploadImageToCloudinary(
-      video,
-      process.env.FOLDER_NAME
-    )
+    let uploadDetails
+    if(video){
+      uploadDetails = await uploadImageToCloudinary(
+        video,
+        process.env.FOLDER_NAME
+      )
+    }
     console.log(uploadDetails)
     // Create a new sub-section with the necessary information
-    const SubSectionDetails = await SubSection.create({
-      title: title,
-      timeDuration: `${uploadDetails.duration}`,
-      description: description,
-      videoUrl: uploadDetails.secure_url,
-    })
 
+    let SubSectionDetails
+    if(post){
+      const postDetails = await Post.create({
+        file: post
+      })
+      console.log(postDetails)
+      SubSectionDetails = await SubSection.create({
+        title: title,
+        isMedia: true,
+        description: description,
+        post: postDetails._id
+      })
+    }
+    else {
+      SubSectionDetails = await SubSection.create({
+        title: title,
+        timeDuration: `${uploadDetails.duration}`,
+        description: description,
+        videoUrl: uploadDetails?.secure_url,
+        
+      })
+    }    
+    console.log(SubSectionDetails)
+    // return
     // Update the corresponding section with the newly created sub-section
     const updatedSection = await Section.findByIdAndUpdate(
       { _id: sectionId },
       { $push: { subSection: SubSectionDetails._id } },
       { new: true }
-    ).populate("subSection")
+    ).populate({
+      path: "subSection",
+      model: 'SubSection',
+      populate: {
+        path: "post",
+        model: 'Post'
+      }
+    })
 
     // Return the updated section in the response
     return res.status(200).json({ success: true, data: updatedSection })

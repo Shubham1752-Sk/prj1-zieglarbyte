@@ -6,6 +6,7 @@ import { useSelector } from "react-redux"
 
 import { createRating } from "../../../../SERVICES/operations/CourseOperations"
 import IconBtn from "../../../COMMON/IconBtn"
+import { enqueueSnackbar } from "notistack"
 
 export default function CourseReviewModal({ setReviewModal }) {
   
@@ -31,6 +32,12 @@ export default function CourseReviewModal({ setReviewModal }) {
   }
 
   const onSubmit = async (data) => {
+    console.log(data.courseRating)
+    if(data.courseRating === 0){
+      enqueueSnackbar("Please rate at least 1 star",{variant:'warning'})
+      return
+    }
+    
     await createRating(
       {
         courseId: courseEntireData._id,
@@ -91,7 +98,7 @@ export default function CourseReviewModal({ setReviewModal }) {
                 className="form-style resize-x-none min-h-[130px] bg-transparent border p-2 outline-none w-full"
               />
               {errors.courseExperience && (
-                <span className="ml-2 text-xs tracking-wide text-pink-200">
+                <span className="ml-2 text-xs tracking-wide text-red-700">
                   Please Add Your Experience
                 </span>
               )}

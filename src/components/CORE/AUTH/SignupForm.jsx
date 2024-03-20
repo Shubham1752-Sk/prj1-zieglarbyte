@@ -1,22 +1,27 @@
-import React, { memo, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 import { signup } from '../../../SERVICES/operations/AuthOperations'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { ACCOUNT_TYPE } from '../../../UTILS/constants'
 import Tab from '../../COMMON/Tab'
+import { enqueueSnackbar } from 'notistack'
 
 const SignupForm = memo( function SignupForm({adminPresent}){
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const {token} = useSelector((state)=>state.auth)
 
     const [loading, setLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-    const [accountType, setAccountType] = useState(ACCOUNT_TYPE.STUDENT)
-
+    const [accountType, setAccountType] = useState("")
+    const accType = adminPresent ? ACCOUNT_TYPE.STUDENT : ACCOUNT_TYPE.INSTRUCTOR
+    console.log(adminPresent)
+    console.log(accType)
+    
     const {
         register,
         handleSubmit,
@@ -24,43 +29,47 @@ const SignupForm = memo( function SignupForm({adminPresent}){
         formState: { errors },
     } = useForm()
 
+    
     const submitForm = ( data) => {
         
         if(data.password !== data.confirmPassword){
             setError('confirmPassword', {type:'custom', message:'Confirm Password should match your password'})
             return
         }
-        setLoading(true)
-        
-        // console.log(accountType)
-        dispatch(signup({
-            accountType: accountType,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email,
-            password: data.password,
-            confirmPassword: data.confirmPassword,
-            contactNumber: data.contactNumber
-        }))
-        setLoading(false)
-        if(!adminPresent){
-            navigate('/login')
+
+        if(adminPresent && accountType !== 'Student'){
+            enqueueSnackbar('Please select account type',{variant:'warning'})
+            return
         }
+
+        if(adminPresent && accountType !== 'Student'){
+            setLoading(true)
+            dispatch(signup({
+                accountType: accountType,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+                password: data.password,
+                confirmPassword: data.confirmPassword,
+                contactNumber: data.contactNumber
+            }))
+            setLoading(false)
+            if(!adminPresent){
+                navigate('/login')
+            }
+        }       
+        
     }
 
     const tabData = [
+        
         {
           id: 1,
-          tabName: "Student",
-          type: ACCOUNT_TYPE.STUDENT,
-        },
-        {
-          id: 2,
           tabName: "Instructor",
           type: ACCOUNT_TYPE.INSTRUCTOR,
         },
         {
-            id: 3,
+            id: 2,
             tabName: "Admin",
             type: ACCOUNT_TYPE.ADMIN,
         },
@@ -161,8 +170,8 @@ const SignupForm = memo( function SignupForm({adminPresent}){
                             </div>
                         </div>
                         {/* Password Fields */}
-                        <div className='w-fit flex gap-2'>
-                            <div className='w-fit flex flex-col space-y-2 '>
+                        <div className='w-auto flex gap-2 '>
+                            <div className='w-1/2 flex flex-col space-y-2 '>
                                 <label htmlFor="firstName"
                                     className='text-lg '
                                 >Password <span className='text-red-700 font-bold text-base'>*</span></label>
@@ -194,7 +203,7 @@ const SignupForm = memo( function SignupForm({adminPresent}){
                                     )
                                 }
                             </div>
-                            <div className='w-fit flex flex-col space-y-2 '>
+                            <div className='w-1/2 flex flex-col space-y-2 '>
                                 <label htmlFor="confirmPassword"
                                     className='text-lg '
                                 >Confirm Password <span className='text-red-700 font-bold text-base'>*</span></label>

@@ -4,6 +4,10 @@ const SubSectionSchema = new mongoose.Schema({
 	title: { 
         type: String 
     },
+    isMedia:{
+        type: Boolean,
+        default:false
+    },
 	timeDuration: { 
         type: String 
     },
@@ -13,6 +17,10 @@ const SubSectionSchema = new mongoose.Schema({
 	videoUrl: { 
         type: String 
     },
+    post: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post'
+    }
 });
 
 module.exports = mongoose.model("SubSection", SubSectionSchema);

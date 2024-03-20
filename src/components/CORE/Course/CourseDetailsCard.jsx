@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom"
 import { addToCart } from "../../../SLICES/CartSlice"
 import { ACCOUNT_TYPE } from "../../../UTILS/constants"
 import { enqueueSnackbar } from "notistack"
+import calculateDiscount from "../../../UTILS/calcDiscount"
 
 // const CourseIncludes = [
 //   "8 hours on-demand video",
@@ -50,27 +51,40 @@ function CourseDetailsCard({ course, setConfirmationModal, handleBuyCourse }) {
     })
   }
 
+  
+
   // console.log("Student already enrolled ", course?.studentsEnroled, user?._id)
 
   return (
     <>
       <div
-        className={`flex flex-col gap-4 rounded-md bg-richblack-700 p-4 text-richblack-5`}
+        className={`flex flex-col gap-4 rounded-md bg-richblack-700  p-4 text-richblack-5`}
       >
         {/* Course Image */}
         <img
           src={ThumbnailImage}
           alt={course?.courseName}
-          className="max-h-[300px] min-h-[180px] w-[400px] overflow-hidden rounded-2xl object-cover md:max-w-full"
+          className="max-h-[300px] min-h-[180px] w-[400px] overflow-hidden rounded-2xl mt-4 object-cover md:max-w-full"
         />
 
         <div className="px-4">
-          <div className="space-x-3 pb-4 text-3xl font-semibold">
-            Rs. {CurrentPrice}
+          <div className="space-x-3 pb-4 flex items-center text-3xl font-semibold">
+            {
+              course?.discountedPrice ? (
+                <>
+                <p>
+                Rs.<strike className="text-sm"> {course.price}</strike>  /- <span className="text-green-500">{course.discountedPrice} <span className="text-red-500 text-base">{calculateDiscount(course.price, course.discountedPrice)}% OFF</span></span>
+                </p>
+                <p></p>
+                </>
+              ) : (
+                <p>{course.price}</p>
+              )
+            }
           </div>
           <div className="flex flex-col gap-4">
             <button
-              className="yellowButton"
+              className="bg-btn-red rounded-full animate-pulse text-white font-bold py-2 hover:animate-none"
               onClick={
                 user && course?.studentsEnroled.includes(user?._id)
                   ? () => navigate("/dashboard/enrolled-courses")
@@ -82,7 +96,7 @@ function CourseDetailsCard({ course, setConfirmationModal, handleBuyCourse }) {
                 : "Buy Now"}
             </button>
             {(!user || !course?.studentsEnroled.includes(user?._id)) && (
-              <button onClick={handleAddToCart} className="blackButton">
+              <button onClick={handleAddToCart} className="border border-btn-red rounded-full py-2 font-bold hover:text-white hover:bg-btn-red ease-in duration-75 ">
                 Add to Cart
               </button>
             )}

@@ -1,27 +1,27 @@
 import React, { useEffect, useState } from "react"
-import { BiInfoCircle } from "react-icons/bi"
-import { HiOutlineGlobeAlt } from "react-icons/hi"
-import ReactMarkdown from "react-markdown"
+// import { BiInfoCircle } from "react-icons/bi"
+// import { HiOutlineGlobeAlt } from "react-icons/hi"
+// import ReactMarkdown from "react-markdown"
 import { useDispatch, useSelector } from "react-redux"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
-import ConfirmationModal from "../../COMMON/ConfirmationModal"
-import RatingStars from "../../COMMON/RatingStars"
+// import ConfirmationModal from "../../COMMON/ConfirmationModal"
+// import RatingStars from "../../COMMON/RatingStars"
 import CourseAccordionBar from "../../CORE/Course/CourseAccordionBar"
 import CourseDetailsCard from "../../CORE/Course/CourseDetailsCard"
-import { formatDate } from "../../../UTILS/formatDate"
-import { fetchCourseDetails } from "../../../SERVICES/operations/CourseOperations"
+// import { formatDate } from "../../../UTILS/formatDate"
+// import { fetchCourseDetails } from "../../../SERVICES/operations/CourseOperations"
 // import { BuyCourse } from "../SERVICES/operations/studentFeaturesAPI"
 import { addToCart } from "../../../SLICES/CartSlice"
 import GetAvgRating from "../../../UTILS/avgRating"
-import Spinner from "../../COMMON/Spinner"
+// import Spinner from "../../COMMON/Spinner"
 
 const CourseDetails = ({ selectedCourse }) => {
 
-    const { user, token } = useSelector((state) => state.auth)
-    const { paymentLoading } = useSelector((state) => state.course)
+    const { user } = useSelector((state) => state.auth)
+    // const { paymentLoading } = useSelector((state) => state.course)
     const dispatch = useDispatch()
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
     console.log(user)
     const [response, setResponse] = useState(null)
     const [confirmationModal, setConfirmationModal] = useState(null)
@@ -85,13 +85,13 @@ const CourseDetails = ({ selectedCourse }) => {
         instructor,
         studentsEnroled,
         createdAt,
-        totalDuration
+        duration
     } = selectedCourse
 
     return (
         <>
-            <div className="relative   ">
-                <div className="mx-auto box-content px-4 lg:w-auto 2xl:relative ">
+            <div className=" relative">
+                <div className="mx-auto px-4 ">
                     <div className="mx-auto grid min-h-[450px] max-w-maxContentTab justify-items-center py-8 lg:mx-0 lg:justify-items-start lg:py-0 xl:max-w-[810px]">
                         <div className="relative block max-h-[30rem] lg:hidden">
                             <div className="absolute bottom-0 left-0 h-full w-full shadow-[#161D29_0px_-64px_36px_-28px_inset]"></div>
@@ -102,25 +102,22 @@ const CourseDetails = ({ selectedCourse }) => {
                             />
                         </div>
                         <div
-                            className={`z-30 my-5 flex flex-col justify-center gap-4 py-5 text-lg text-richblack-5`}
+                            className={`z-30 my-5 flex flex-col justify-center gap-4 py-5 text-lg text-richblack-5 `}
                         >
                             <div>
                                 <p className='text-2xl sm:text-5xl font-serif font-semibold leading-15 text-btn-red'>
                                     {courseName}
                                 </p>
                             </div>
-                            <p className={`text-richblack-200`}>{courseDescription}</p>
-                            <div className="text-md flex flex-wrap items-center gap-2">
+                            <p className={`text-richblack-200 lg:w-8/12 xl:w-10/12 2xl:w-full  `}>{courseDescription}</p>
+                            {/* ratings */}
+                            {/* <div className="text-md flex flex-wrap items-center gap-2">
                                 <span >{avgReviewCount}</span>
                                 <RatingStars Review_Count={avgReviewCount} Star_Size={24} />
                                 <span>{`(${ratingAndReviews.length} reviews)`}</span>
                                 <span>{`${studentsEnroled.length} students enrolled`}</span>
                             </div>
-                            <div>
-                                <p className="">
-                                    Created By {`${instructor.firstName} ${instructor.lastName}`}
-                                </p>
-                            </div>
+                            date of creation
                             <div className="flex flex-wrap gap-5 text-lg">
                                 <p className="flex items-center gap-2">
                                     {" "}
@@ -130,7 +127,7 @@ const CourseDetails = ({ selectedCourse }) => {
                                     {" "}
                                     <HiOutlineGlobeAlt /> English
                                 </p>
-                            </div>
+                            </div> */}
                             <div>
                                 <p className="text-2xl font-bold text-btn-red">What You'll learn: </p>
                                 {
@@ -144,18 +141,18 @@ const CourseDetails = ({ selectedCourse }) => {
                             <p className="space-x-3 pb-4 text-3xl font-semibold ">
                                 Rs. {price}
                             </p>
-                            <button className="yellowButton" >
+                            <button className="bg-btn-red rounded-full animate-pulse text-white font-bold py-2 hover:animate-none" >
                                 Buy Now
                             </button>
-                            <button className="blackButton" onClick={() => dispatch(addToCart(selectedCourse))}>Add to Cart</button>
+                            <button className="border border-btn-red rounded-full py-2 font-bold hover:text-white hover:bg-btn-red ease-in duration-75" onClick={() => dispatch(addToCart(selectedCourse))}>Add to Cart</button>
                         </div>
                     </div>
                     {/* Courses Card */}
-                    <div className="right-[1rem] top-[60px] mx-auto hidden min-h-[600px] w-1/3 max-w-fit translate-y-24 md:translate-y-0 lg:absolute  lg:block">
+                    <div className="right-[2rem] top-[60px] mx-auto hidden min-h-[600px] w-1/3 max-w-fit translate-y-32 md:translate-y-0 lg:absolute  lg:block">
                         <CourseDetailsCard
                             course={selectedCourse}
                             setConfirmationModal={setConfirmationModal}
-                        //   handleBuyCourse={handleBuyCourse}
+                           //handleBuyCourse={handleBuyCourse}
                         />
                     </div>
                 </div>
@@ -175,7 +172,7 @@ const CourseDetails = ({ selectedCourse }) => {
                   <span>
                     {totalNoOfLectures} {`lecture(s)`}
                   </span>
-                  <span>{totalDuration} total length</span>
+                  <span><span className="text-btn-red font-semibold">{duration}</span> total length</span>
                 </div>
                 <div>
                   <button

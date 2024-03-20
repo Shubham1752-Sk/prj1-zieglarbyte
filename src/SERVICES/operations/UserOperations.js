@@ -3,11 +3,13 @@ import { setLoading, setUser } from "../../SLICES/AuthSlice"
 import { logout } from "./AuthOperations"
 import { userEndpoints } from "../apis"
 import { enqueueSnackbar, closeSnackbar } from "notistack"
+import { setData } from "../../SLICES/certificate"
 
 const {
     GET_USER_DETAILS_API,
     GET_USER_ENROLLED_COURSES_API,
-    GET_INSTRUCTOR_DATA_API
+    GENERATE_CERTIFICATE,
+    GET_CERTIFICATE_DETAILS
 } = userEndpoints
 
 export function getUserDetails(token, navigate) {
@@ -29,7 +31,7 @@ export function getUserDetails(token, navigate) {
         dispatch(setUser({ ...response.data.data, image: userImage }))
         dispatch(setLoading(false))
         closeSnackbar(snackId)
-        // navigate('/dashboard/my-profile')
+        navigate('/dashboard/my-profile')
       } catch (error) {
         dispatch(logout(navigate))
         console.log("GET_USER_DETAILS API ERROR............", error)
@@ -72,20 +74,51 @@ export function getUserDetails(token, navigate) {
     return result
   }
   
-  export async function getInstructorData(token) {
-    let snackId = enqueueSnackbar("Loading...",{vairent:'info'})
-    let result = []
+  export function generateCertificateData(name, courseName, token) {
+    
+    return async (dispatch)=>{
+      let snackId = enqueueSnackbar("Processing your request....", {variant:'info'})
+      try {
+        
+        const response = await apiConnector('POST',GENERATE_CERTIFICATE,{
+          name,
+          courseName
+        },{
+          Authorization: `Bearer ${token}`
+        })
+        if(!response.data.success){
+          throw new Error(response.data.message)
+        }
+        console.log('hi!!')
+        console.log('GENERATE CERTIFICATE RESPONSE..... ',response)
+        dispatch(setData(response?.data?.certificateData))
+        // result = response.data.certificateData
+      } catch (error) {
+        console.log("GENERATE_CERTIFICATE_DATA API ERROR............", error)
+        enqueueSnackbar("Could Not Generate Data",{variant:'error'})
+      }
+      closeSnackbar(snackId)
+    
+    }
+    
+  }
+
+  export async function getCertificateDetails(id){
+    let result = null
+    const snackId = enqueueSnackbar("Fetching Details",{variant:'info',persist:true})
     try {
-      const response = await apiConnector("GET", GET_INSTRUCTOR_DATA_API, null, {
-        Authorization: `Bearer ${token}`,
-      })
-      console.log("GET_INSTRUCTOR_DATA_API API RESPONSE............", response)
-      result = response?.data?.courses
+      const response = await apiConnector('GET',`${GET_CERTIFICATE_DETAILS}/${id}`)
+
+      if(!response.data.success){
+        throw new Error(response.data.error)
+      }
+      console.log('GET CERTIFICATE DATA DETAILS.....', response)
+      result = response?.data?.certificateData
     } catch (error) {
-      console.log("GET_INSTRUCTOR_DATA_API API ERROR............", error)
-      enqueueSnackbar("Could Not Get Instructor Data",{variant:'error'})
+      console.log("GET_CERTIFICATE_DETAILS API ERROR............", error)
+      enqueueSnackbar("Could Not Get Certificate Data",{variant:'error'}) 
+      
     }
     closeSnackbar(snackId)
     return result
   }
-  

@@ -10,6 +10,7 @@ import {
 import { setCourse } from "../../../../../SLICES/CourseSlice"
 import IconBtn from "../../../../COMMON/IconBtn"
 import Upload from "../Upload"
+import { enqueueSnackbar } from "notistack"
 
 export default function SubSectionModal({
   modalData,
@@ -25,6 +26,9 @@ export default function SubSectionModal({
     formState: { errors },
     getValues,
   } = useForm()
+
+  const [document, setDocument] = useState("")
+  const [isSelected, setSelected] = useState(false)
 
   // console.log("view", view)
   // console.log("edit", edit)
@@ -106,25 +110,25 @@ export default function SubSectionModal({
 
     if (edit) {
       if (!isFormUpdated()) {
-        alert("No changes made to the form")
+        enqueueSnackbar("No changes made to the form",{variant:'warning'})
       } else {
         handleEditSubsection()
       }
       return
     }
 
-    const formData = new FormData()
-    formData.append("sectionId", modalData)
-    formData.append("title", data.lectureTitle)
-    formData.append("description", data.lectureDesc)
-    formData.append("video", data.lectureVideo)
-
+    if(document){
+      console.log("document is present");
+    }
+    // return
     const payloadData = {
       sectionId: modalData,
       title: data.lectureTitle,
       description: data.lectureDesc,
-      video: data.lectureVideo
+      video: data?.lectureVideo,
+      post: document
     }
+    console.log(payloadData)
     setLoading(true)
     const result = await createSubSection(payloadData, token)
     if (result) {
@@ -139,6 +143,35 @@ export default function SubSectionModal({
     setLoading(false)
   }
 
+  const handleChange = async(event) =>{
+    // console.log(event)
+    console.log("In the handle Change Function")
+    const file = event.target.files[0];
+    console.log(file)
+    let reader = new FileReader();
+    const res = reader.readAsDataURL(file);
+    console.log(res)
+    reader.onloadend = () =>{
+      // console.log(reader.result)
+      const result = reader.result
+      // console.log(result)
+      // console.log(isSelected)
+      setDocument(result)
+      setSelected(true)
+      // console.log(isSelected)
+      // console.log("document is: ",document)
+    }
+  }
+
+  // async function handleChange(e){
+  //   e.preventDefault();
+  //   console.log("In the handle change func")
+  // }
+
+  // useEffect(()=>{
+  //   alert('document Changed')
+    
+  // },[document])
   return (
     <div className="fixed inset-0 z-[1000] !mt-0 grid h-screen w-screen place-items-center overflow-auto bg-white bg-opacity-10 backdrop-blur-sm">
       <div className="my-10 w-11/12 max-w-[700px] rounded-lg border bg-white bg-opacity-30">
@@ -157,20 +190,39 @@ export default function SubSectionModal({
           className="space-y-8 px-8 py-10"
         >
           {/* Lecture Video Upload */}
-          <Upload
+
+          {
+            !modalData.isMedia && (
+              <Upload
             name="lectureVideo"
             label="Lecture Video"
             register={register}
+            docSelected = {isSelected}
             setValue={setValue}
             errors={errors}
             video={true}
             viewData={view ? modalData.videoUrl : null}
             editData={edit ? modalData.videoUrl : null}
           />
+            )
+          }
+          {
+            !view && !edit && (
+              <div className="flex gap-4 items-center">
+            <label className="text-sm text-richblack-5" htmlFor="document">Documents</label>
+            <input
+              type="file"
+              onChange={handleChange}
+              accept=".pdf"
+              // {...register("post" )}
+            />
+          </div>
+            )
+          }
           {/* Lecture Title */}
           <div className="flex flex-col space-y-2">
             <label className="text-sm text-richblack-5" htmlFor="lectureTitle">
-              Lecture Title {!view && <sup className="text-red-700">*</sup>}
+              Lecture/Document Title {!view && <sup className="text-red-700">*</sup>}
             </label>
             <input
               disabled={view || loading}
@@ -181,14 +233,14 @@ export default function SubSectionModal({
             />
             {errors.lectureTitle && (
               <span className="ml-2 text-xs tracking-wide text-red-700">
-                Lecture title is required
+                Lecture/Document title is required
               </span>
             )}
           </div>
           {/* Lecture Description */}
           <div className="flex flex-col space-y-2">
             <label className="text-sm text-richblack-5" htmlFor="lectureDesc">
-              Lecture Description{" "}
+              Lecture/Document Description{" "}
               {!view && <sup className="text-red-700">*</sup>}
             </label>
             <textarea
@@ -200,7 +252,7 @@ export default function SubSectionModal({
             />
             {errors.lectureDesc && (
               <span className="ml-2 text-xs tracking-wide text-red-700">
-                Lecture Description is required
+                Lecture/Document Description is required
               </span>
             )}
           </div>

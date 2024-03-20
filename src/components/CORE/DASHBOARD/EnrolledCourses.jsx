@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react"
 import ProgressBar from "@ramonak/react-progress-bar"
-import { BiDotsVerticalRounded } from "react-icons/bi"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
-
+import { resetViewCourse } from "../../../SLICES/viewCourseSlice"
 import { getUserEnrolledCourses } from "../../../SERVICES/operations/UserOperations"
 
 export default function EnrolledCourses() {
@@ -11,14 +10,18 @@ export default function EnrolledCourses() {
   const viewCourse = useSelector((state)=>state.viewCourse)
   console.log("View Course is: ",viewCourse)
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const [enrolledCourses, setEnrolledCourses] = useState(null)
 
+  useEffect(()=>{
+    dispatch(resetViewCourse())
+  },[])
   useEffect(() => {
     ;(async () => {
       try {
         const res = await getUserEnrolledCourses(token) // Getting all the published and the drafted courses
-
+        console.log(res)
         // Filtering the published course out
         const filterPublishCourse = res.filter((ele) => ele.status !== "Draft")
         // console.log(

@@ -72,7 +72,7 @@ export function login(email, password, navigate) {
       dispatch(setUser({ ...response.data.user, image: userImage }))
       localStorage.setItem("token", JSON.stringify(response.data.token))
       dispatch(setToken(response.data.token))
-      // navigate("/dashboard/my-profile")
+      navigate("/dashboard/my-profile")
     } catch (error) {
       console.log("LOGIN API ERROR............", error)
       enqueueSnackbar("Login Failed",{variant:'error'})

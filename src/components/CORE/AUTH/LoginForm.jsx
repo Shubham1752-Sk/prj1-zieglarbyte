@@ -22,7 +22,7 @@ const LoginForm = () => {
       enqueueSnackbar("You are Already Logged In!!",{variant:'error'})
       navigate('/dashboard/my-profile')
     }
-  },[token])
+  },[])
   const {
     register,
     handleSubmit,

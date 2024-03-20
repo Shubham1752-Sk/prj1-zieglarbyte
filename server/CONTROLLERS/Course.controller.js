@@ -13,8 +13,12 @@ function getCourseDuration(courseDetails){
   let totalDurationInSeconds = 0
     courseDetails.courseContent.forEach((content) => {
       content.subSection.forEach((subSection) => {
-        const timeDurationInSeconds = parseInt(subSection.timeDuration)
-        totalDurationInSeconds += timeDurationInSeconds
+        // console.log(subSection?.timeDuration)
+        if(subSection?.timeDuration){
+          // console.log(subSection.timeDuration)
+          const timeDurationInSeconds = parseInt(subSection?.timeDuration)
+          totalDurationInSeconds += timeDurationInSeconds
+        }  
       })
     })
 
@@ -34,6 +38,7 @@ exports.createCourse = async (req, res) => {
       courseDescription,
       whatYouWillLearn,
       price,
+      discountedPrice,
       tag,
       category,
       status,
@@ -111,6 +116,7 @@ exports.createCourse = async (req, res) => {
       instructor: instructorDetails._id,
       whatYouWillLearn: whatYouWillLearn,
       price,
+      discountedPrice: discountedPrice ? discountedPrice : 0,
       tag,
       category: categoryDetails._id,
       thumbnail: thumbnailImage.secure_url,
@@ -162,11 +168,13 @@ exports.createCourse = async (req, res) => {
 
 exports.editCourse = async (req, res) => {
   try {
-    const { courseId, thumbnail } = req.body
+    const { courseId } = req.body
     const updates = req.body
     // console.log(courseId)
     // console.log(updates)
-    
+    if(updates.discountedPrice){
+      console.log(updates.discountedPrice)
+    }
     const course = await Course.findById(courseId)
 
     if (!course) {
@@ -175,14 +183,14 @@ exports.editCourse = async (req, res) => {
     course.toObject()
     // console.log("course is: ",course)
     // If Thumbnail Image is found, update it
-    if (thumbnail) {
+    if (updates.thumbnailImage) {
       console.log("thumbnail update")
       // const thumbnail = req.files.thumbnailImage
-      const thumbnailImage = await uploadImageToCloudinary(
-        thumbnail,
+      const thumbnail = await uploadImageToCloudinary(
+        updates.thumbnailImage,
         process.env.FOLDER_NAME
       )
-      course.thumbnail = thumbnailImage.secure_url
+      course.thumbnail = thumbnail.secure_url
     }
 
     // Update only the fields that are present in the request body
@@ -417,6 +425,10 @@ exports.getFullCourseDetails = async (req, res) => {
         path: "courseContent",
         populate: {
           path: "subSection",
+          populate: {
+            path: "post",
+            model: "Post"
+          }
         },
       })
       .exec()
@@ -513,39 +525,75 @@ exports.updateCourseProgress = async (req, res) => {
 }
 
 exports.getAllCourses = async (req,res) =>{
-  try{
-    const courses=await Course.find().sort({createdAt: -1})
-    .populate("instructor")
-    .populate({
-      path: "courseContent",
-      model: 'Section',
-      populate: {
-        path: "subSection",
-        model: 'SubSection',
-        select: "-videoUrl",
-      },
-    })
-    
-    let allCourses = []
   
-    for(let course of courses){
-      const duration = getCourseDuration(course)
-      const courseObject = {...course, duration}
-      courseObject.duration = duration;
-      const courseWithDuration = {...courseObject._doc, duration}
-      allCourses.push(courseWithDuration);
+  const role = req?.user?.role
+  console.log(role)
+
+  if(role==='Admin'){
+    try {
+      const courseDetails = await Course.find()
+      console.log("In the Admin Dashboard",courseDetails)
+      const courseData = courseDetails.map((course) => {
+        const totalStudentsEnrolled = course.studentsEnroled.length
+        const totalAmountGenerated = totalStudentsEnrolled * course.price
+  
+        // Create a new object with the additional fields
+        const courseDataWithStats = {
+          _id: course._id,
+          courseName: course.courseName,
+          courseDescription: course.courseDescription,
+          // Include other course properties as needed
+          totalStudentsEnrolled,
+          totalAmountGenerated,
+        }
+  
+        return courseDataWithStats
+      })
+  
+      res.status(200).json({ 
+        success: true,
+        allCourses: courseData })
+    } catch (error) {
+      console.error(error)
+      res.status(500).json({ message: "Server Error" })
     }
-    console.log(allCourses)
-    return res.status(200).json({
-      success: true,
-      allCourses
-    })
   }
-  catch(error){
-    console.log(error)
-    return res.status(500).json({
-      success: false,
-      message: `Interval Server Error while Fetching all Courses ${error}`
-    })
+  else{
+    try{
+      const courses=await Course.find().sort({createdAt: -1})
+      .populate("instructor")
+      .populate({
+        path: "courseContent",
+        model: 'Section',
+        populate: {
+          path: "subSection",
+          model: 'SubSection',
+          select: "-videoUrl",
+        },
+      })
+      .populate("ratingAndReviews")
+      
+      let allCourses = []
+    
+      for(let course of courses){
+        const duration = getCourseDuration(course)
+        const courseObject = {...course, duration}
+        courseObject.duration = duration;
+        const courseWithDuration = {...courseObject._doc, duration}
+        allCourses.push(courseWithDuration);
+      }
+      console.log(allCourses)
+      return res.status(200).json({
+        success: true,
+        allCourses
+      })
+    }
+    catch(error){
+      console.log(error)
+      return res.status(500).json({
+        success: false,
+        message: `Interval Server Error while Fetching all Courses ${error}`
+      })
+    }
   }
 }

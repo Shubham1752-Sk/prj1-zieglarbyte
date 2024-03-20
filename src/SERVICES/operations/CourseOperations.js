@@ -17,7 +17,8 @@ const {
     GET_FULL_COURSE_DETAILS_AUTHENTICATED,
     CREATE_RATING_API,
     LECTURE_COMPLETION_API,
-    GET_ALL_COURSES_API
+    GET_ALL_COURSES_API,
+    GET_ALL_COURSES_API_HOMEPAGE,
 } = courseEndpoints
 
 export const addCourseDetails = async (data, token) => {
@@ -351,7 +352,7 @@ export const getAllCourses = async(token)=>{
   let result = null;
   try {
     const response = await apiConnector('GET', GET_ALL_COURSES_API, null ,{Authorization:`Bearer ${token}`})
-
+    console.log(response.data)
     if(!response.data.success){
       throw new Error("Unable to fetch Courses")
     }
@@ -362,5 +363,27 @@ export const getAllCourses = async(token)=>{
   } catch (error) {
     console.log("ERROR IN GET_ALL_COURSES_API....",error)
   }
+  closeSnackbar(snackID)
+  return result
+}
+
+export const getAllCoursesHomePage = async() =>{
+  const snackID = enqueueSnackbar("Fetching Courses....",{variant:'info', persist:true})
+  let result = null;
+  try {
+    const response = await apiConnector('GET', GET_ALL_COURSES_API_HOMEPAGE, )
+    console.log(response.data)
+    if(!response.data.success){
+      throw new Error("Unable to fetch Courses")
+    }
+    
+    closeSnackbar(snackID)
+    result = response?.data?.allCourses
+    console.log(result)
+    
+  } catch (error) {
+    console.log("ERROR IN GET_ALL_COURSES_API....",error)
+  }
+  closeSnackbar(snackID)
   return result
 }
