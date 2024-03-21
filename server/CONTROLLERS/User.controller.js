@@ -4,7 +4,6 @@ const Course = require("../MODELS/Course.model")
 const CourseProgress = require("../MODELS/CourseProgress.model")
 const { convertSecondsToDuration } = require("../UTILS/secToDuration")
 const { uploadImageToCloudinary } = require('../UTILS/imageUploader')
-const { json } = require("react-router-dom")
 
 exports.getUserDetails = async (req, res) => {
     try {

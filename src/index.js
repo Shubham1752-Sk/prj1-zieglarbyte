@@ -19,7 +19,6 @@ root.render(
         }} >
         
           <App />
-        
       </SnackbarProvider>
     </BrowserRouter>
   </Provider>
