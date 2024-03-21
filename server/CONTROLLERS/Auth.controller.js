@@ -23,12 +23,18 @@ exports.signup = async (req, res) => {
         contactNumber,
       } = req.body
       
+      // console.log("acctype",accountType)
+      // console.log("Firstname",firstName)
+      // console.log("email",email)
+      // console.log("password",password)
+      // console.log("confirmPassword",confirmPassword)
       // Check if All Details are there or not
       if (
         !accountType ||
         !firstName ||
         !email ||
         !password ||
+        !contactNumber ||
         !confirmPassword
       ) {
         return res.status(403).send({

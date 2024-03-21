@@ -17,7 +17,7 @@ const SignupForm = memo( function SignupForm({adminPresent}){
     const [loading, setLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-    const [accountType, setAccountType] = useState("")
+    const [accountType, setAccountType] = useState(null)
 
     const accType = adminPresent ? ACCOUNT_TYPE.INSTRUCTOR : ACCOUNT_TYPE.STUDENT
     console.log("admin",adminPresent)
@@ -33,32 +33,35 @@ const SignupForm = memo( function SignupForm({adminPresent}){
     
     const submitForm = ( data) => {
         
+        console.log("in the function")
         if(data.password !== data.confirmPassword){
             setError('confirmPassword', {type:'custom', message:'Confirm Password should match your password'})
             return
         }
 
-        if(adminPresent && accountType !== 'Student'){
+        if(adminPresent && accountType === 'Student'){
             enqueueSnackbar('Please select account type',{variant:'warning'})
             return
         }
 
-        if(adminPresent && accountType !== 'Student'){
-            setLoading(true)
-            dispatch(signup({
-                accountType: accountType,
-                firstName: data.firstName,
-                lastName: data.lastName,
-                email: data.email,
-                password: data.password,
-                confirmPassword: data.confirmPassword,
-                contactNumber: data.contactNumber
-            }))
-            setLoading(false)
-            if(!adminPresent){
-                navigate('/login')
-            }
-        }       
+        
+        console.log("Signing user")
+        setLoading(true)
+        console.log(data)
+        dispatch(signup({
+            accountType: accountType? accountType : accType,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            password: data.password,
+            confirmPassword: data.confirmPassword,
+            contactNumber: data.contactNumber
+        }))
+        setLoading(false)
+        if(!adminPresent){
+            navigate('/login')
+        }
+            
         
     }
 
