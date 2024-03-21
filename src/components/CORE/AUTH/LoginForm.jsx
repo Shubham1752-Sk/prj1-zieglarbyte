@@ -106,6 +106,9 @@ const LoginForm = () => {
             </button>
           </div>
         </form>
+        <div className='w-full h-fit p-2 text-lg flex gap-5 justify-center'>
+          <span>new User?</span> <span className="hover:underline hover:cursor-pointer hover:text-[#4a4a4c]" onClick={()=>navigate('/signup')}>Signup now</span> 
+        </div>
       </div>
     </>
   )

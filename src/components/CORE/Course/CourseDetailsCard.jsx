@@ -21,6 +21,8 @@ function CourseDetailsCard({ course, setConfirmationModal, handleBuyCourse }) {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
+  console.log(token)
+
   const {
     thumbnail: ThumbnailImage,
     price: CurrentPrice,

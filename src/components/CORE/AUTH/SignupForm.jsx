@@ -18,9 +18,10 @@ const SignupForm = memo( function SignupForm({adminPresent}){
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const [accountType, setAccountType] = useState("")
-    const accType = adminPresent ? ACCOUNT_TYPE.STUDENT : ACCOUNT_TYPE.INSTRUCTOR
-    console.log(adminPresent)
-    console.log(accType)
+
+    const accType = adminPresent ? ACCOUNT_TYPE.INSTRUCTOR : ACCOUNT_TYPE.STUDENT
+    console.log("admin",adminPresent)
+    console.log("acctype",accType)
     
     const {
         register,
@@ -244,6 +245,8 @@ const SignupForm = memo( function SignupForm({adminPresent}){
                         </div>
                     </div>
                 </form>
+
+                <div className='text-white text-lg w-full h-fit p-2 flex justify-center gap-4'><span>Already a user ?</span> <span className='hover:underline hover:text-[#4a4a4c] hover:cursor-pointer' onClick={()=>navigate('/login')}>Login</span></div>
             </div>
         </>
     )
