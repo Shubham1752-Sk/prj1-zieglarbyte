@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useRef } from "react"
 // import { BiInfoCircle } from "react-icons/bi"
 // import { HiOutlineGlobeAlt } from "react-icons/hi"
 // import ReactMarkdown from "react-markdown"
@@ -24,7 +24,8 @@ const CourseDetails = ({ selectedCourse }) => {
   // const { paymentLoading } = useSelector((state) => state.course)
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  console.log(user)
+
+  // console.log(user)
   const [response, setResponse] = useState(null)
   const [confirmationModal, setConfirmationModal] = useState(null)
   const [avgReviewCount, setAvgReviewCount] = useState(0)
@@ -112,7 +113,7 @@ const CourseDetails = ({ selectedCourse }) => {
 
   return (
     <>
-      <div className=" relative">
+      <div className="mt-6 sm:mt-0 relative">
         <div className="mx-auto px-4 ">
           <div className="mx-auto grid min-h-[450px] max-w-maxContentTab justify-items-center py-8 lg:mx-0 lg:justify-items-start lg:py-0 xl:max-w-[810px]">
             <div className="relative block max-h-[30rem] lg:hidden">
@@ -124,7 +125,7 @@ const CourseDetails = ({ selectedCourse }) => {
               />
             </div>
             <div
-              className={`z-30 my-5 flex flex-col justify-center gap-4 py-5 text-lg text-richblack-5 `}
+              className={` my-5 flex flex-col justify-center gap-4 py-5 text-lg text-richblack-5 `}
             >
               <div>
                 <p className='text-2xl sm:text-5xl font-serif font-semibold leading-15 text-btn-red'>
